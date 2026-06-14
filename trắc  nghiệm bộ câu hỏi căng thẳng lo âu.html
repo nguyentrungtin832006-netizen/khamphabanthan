@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Tâm Lý - Đánh Giá Căng Thẳng & Lo Âu</title>
+    <style>
+        /* ĐỒI BẢNG MÀU THEO HÌNH ẢNH MẪU image_6a9201.jpg */
+        :root {
+            /* Nền gradient chuyển từ tím hồng sang xanh pastel */
+            --bg-gradient: linear-gradient(135deg, #dfcbfb 0%, #b6cbff 100%);
+            /* Màu tím hoa oải hương làm chủ đạo từ nút bấm trong ảnh */
+            --primary-color: #7a70e6; 
+            /* Tông tím dịu hơn làm màu phụ / tiến trình */
+            --secondary-color: #9187f5;
+            /* Màu chữ xám đen đậm tạo sự nhẹ nhàng sâu lắng */
+            --text-color: #1e293b;
+            /* Nền hộp nội dung màu trắng trong suốt dạng kính mờ (Glassmorphism) */
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --shadow: 0 8px 32px rgba(122, 112, 230, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-h-screen: 100vh;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            /* Thêm hiệu ứng blur nền kính mờ tăng độ sang trọng */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            color: var(--text-color);
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        header p {
+            text-align: center;
+            color: #475569;
+            margin-bottom: 30px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background-color: var(--primary-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Question Styles */
+        .question-box {
+            display: none;
+        }
+
+        .question-box.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #0f172a;
+        }
+
+        /* Options */
+        .options-list {
+            list-style: none;
+        }
+
+        .option-item {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .option-item:hover {
+            border-color: var(--secondary-color);
+            background-color: rgba(243, 240, 255, 0.8);
+        }
+
+        .option-item.selected {
+            border-color: var(--primary-color);
+            background-color: #f3f0ff;
+            color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(122, 112, 230, 0.15);
+        }
+
+        /* Buttons Navigation */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-prev {
+            background-color: rgba(0, 0, 0, 0.06);
+            color: #334155;
+        }
+
+        .btn-prev:hover { background-color: rgba(0, 0, 0, 0.1); }
+
+        .btn-next {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(122, 112, 230, 0.25);
+        }
+
+        .btn-next:hover { 
+            background-color: #655bc7; 
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Result Box */
+        #result-box {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 25px auto;
+            box-shadow: 0 8px 20px rgba(122, 112, 230, 0.3);
+        }
+
+        .result-status {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .result-advice {
+            color: #334155;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 18px;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 8px;
+            text-align: left;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            border-right: 1px solid rgba(255,255,255,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-restart {
+            margin-top: 25px;
+            background-color: var(--secondary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(145, 135, 245, 0.25);
+        }
+        .btn-restart:hover { background-color: #7d72eb; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Đánh Giá Mức Độ Căng Thẳng & Lo Âu</h1>
+        <p id="sub-title">Hãy chọn câu trả lời đúng nhất với trạng thái gần đây của bạn.</p>
+        <div class="progress-container" id="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </header>
+
+    <!-- Khu vực hiển thị câu hỏi bằng JS -->
+    <div id="quiz-container"></div>
+
+    <!-- Thanh điều hướng câu hỏi -->
+    <div class="nav-buttons" id="nav-buttons">
+        <button class="btn-prev" id="btn-prev" onclick="changeQuestion(-1)" disabled>Quay lại</button>
+        <button class="btn-next" id="btn-next" onclick="changeQuestion(1)">Tiếp theo</button>
+    </div>
+
+    <!-- Khu vực hiển thị kết quả -->
+    <div id="result-box" style="display: none;">
+        <h2>Kết quả đánh giá của bạn</h2>
+        <div class="score-circle" id="total-score">0</div>
+        <div class="result-status" id="result-status">Mức độ</div>
+        <p class="result-advice" id="result-advice">Lời khuyên</p>
+        <button class="btn-restart" onclick="restartQuiz()">Thực hiện lại bài test</button>
+    </div>
+</div>
+
+<script>
+    // Toàn bộ logic JavaScript giữ nguyên của bạn để đảm bảo bài test chạy mượt mà ổn định
+    const questions = [
+        "Tôi cảm thấy khó thư giãn ngay cả khi không có việc gì phải làm.",
+        "Tôi lo lắng về những vấn đề nhỏ bé trong cuộc sống.",
+        "Tôi cảm thấy tim đập nhanh khi nghĩ đến công việc hoặc học tập.",
+        "Tôi khó tập trung vì có quá nhiều suy nghĩ trong đầu.",
+        "Tôi cảm thấy áp lực vì các trách nhiệm liên tục mỗi ngày.",
+        "Tôi dễ dàng tấn công hoặc nổi nóng hơn bình thường.",
+        "Tôi cảm thấy bất kỳ ai mà không biết nguyên nhân.",
+        "Tôi thường nghĩ đến những điều tồi tệ có thể xảy ra.",
+        "Tôi gặp khó khăn khi đưa ra quyết định.",
+        "Tôi cảm thấy kiệt sức về mặt tinh thần.",
+        "Tôi khó ngủ vì suy nghĩ quá nhiều.",
+        "Tôi thức dậy with cảm giác lo lắng.",
+        "Tôi cảm thấy cơ bắp căng cứng hoặc mệt mỏi khi tập luyện.",
+        "Tôi lo sợ mình sẽ mắc sai lầm.",
+        "Tôi cảm thấy khó kiểm soát cảm xúc của mình.",
+        "Tôi cảm thấy căng thẳng khi phải giao tiếp với người khác.",
+        "Tôi lo lắng về tương lai của mình.",
+        "Tôi cảm thấy bản thân không đủ tốt.",
+        "Tôi cảm thấy bồn chồn, không thể ngồi yên.",
+        "Tôi thường xuyên suy nghĩ về các vấn đề chưa xảy ra.",
+        "Tôi cảm thấy đã quá tải bởi khối lượng công việc.",
+        "Tôi khó tận dụng những hoạt động giải trí.",
+        "Tôi thường xuyên cảm thấy hồi hộp hoặc căng thẳng.",
+        "Tôi lo lắng về sức khỏe của mình dù không có dấu hiệu rõ ràng.",
+        "Tôi cảm thấy khó chịu khi mọi thứ không diễn ra như kế hoạch.",
+        "Tôi cảm thấy cần phải kiểm soát mọi công việc.",
+        "Tôi cảm thấy khó thở hoặc kích hoạt khi căng thẳng.",
+        "Tôi cảm thấy lo lắng khi phải chờ kết quả nào đó.",
+        "Tôi cảm thấy không thể ngừng suy nghĩ về các vấn đề của mình.",
+        "Tôi cảm thấy áp lực từ kỳ vọng của người khác.",
+        "Tôi thường xuyên cảm thấy mệt mỏi dù đã nghỉ ngơi.",
+        "Tôi lo lắng về tình hình tài chính của mình.",
+        "Tôi cảm thấy khó chịu khi có sự thay đổi bất ngờ.",
+        "Tôi cảm thấy mình luôn ở trạng thái cảnh giác.",
+        "Tôi khó thư giãn vào ngày cuối cùng.",
+        "Tôi thường xuyên cảm thấy lo âu trước các cuộc gặp gỡ quan trọng.",
+        "Tôi cảm thấy dễ bị tổn thương trước những lời chỉ trích.",
+        "Tôi cảm thấy khó cân bằng giữa công việc và cuộc sống cá nhân.",
+        "Tôi cảm thấy sợ hãi khi nghĩ đến những điều chưa biết.",
+        "Tôi cảm thấy mình cần nghỉ ngơi nhưng không thể dừng lại.",
+        "Tôi cảm thấy khó chịu với tiếng ồn hoặc sự ồn ào xung quanh.",
+        "Tôi thường xuyên cảm thấy áp lực về thời gian.",
+        "Tôi cảm thấy lo lắng trước khi đi ngủ.",
+        "Tôi cảm thấy khó tin tưởng rằng mọi công việc đều sẽ ổn định.",
+        "Tôi cảm thấy mình đang chịu quá nhiều áp lực cùng một lúc.",
+        "Tôi thường xuyên tự phê bình bản thân.",
+        "Tôi cảm thấy khó kiểm soát các suy nghĩ tiêu cực.",
+        "Tôi cảm thấy thẳng thắn ngay trong những ngày bình thường.",
+        "Tôi lo lắng rằng mình sẽ không hoàn thành tốt các nhiệm vụ được giao.",
+        "Nhìn chung, tôi thấy mức độ căng thẳng hoặc lo âu của mình đang ảnh hưởng đến cuộc sống hằng ngày."
+    ];
+
+    const options = [
+        { text: "Không bao giờ", score: 0 },
+        { text: "Thỉnh thoảng (Ít khi)", score: 1 },
+        { text: "Thường xuyên", score: 2 },
+        { text: "Gần như luôn luôn", score: 3 }
+    ];
+
+    let currentIdx = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+
+    const quizContainer = document.getElementById('quiz-container');
+    const progressBar = document.getElementById('progress-bar');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+
+    function initQuiz() {
+        quizContainer.innerHTML = '';
+        questions.forEach((q, qIdx) => {
+            const qBox = document.createElement('div');
+            qBox.className = `question-box ${qIdx === 0 ? 'active' : ''}`;
+            qBox.id = `q-${qIdx}`;
+
+            const qText = document.createElement('div');
+            qText.className = 'question-text';
+            qText.innerText = `Câu ${qIdx + 1}: ${q}`;
+            qBox.appendChild(qText);
+
+            const optList = document.createElement('div');
+            optList.className = 'options-list';
+
+            options.forEach((opt) => {
+                const optItem = document.createElement('div');
+                optItem.className = 'option-item';
+                optItem.innerText = opt.text;
+                optItem.onclick = () => selectOption(qIdx, opt.score, optItem);
+                optList.appendChild(optItem);
+            });
+
+            qBox.appendChild(optList);
+            quizContainer.appendChild(qBox);
+        });
+        updateProgress();
+    }
+
+    function selectOption(qIdx, score, element) {
+        userAnswers[qIdx] = score;
+        const siblings = element.parentNode.querySelectorAll('.option-item');
+        siblings.forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+
+        setTimeout(() => {
+            if(currentIdx < questions.length - 1) {
+                changeQuestion(1);
+            }
+        }, 300);
+    }
+
+    function changeQuestion(direction) {
+        document.getElementById(`q-${currentIdx}`).classList.remove('active');
+        currentIdx += direction;
+        document.getElementById(`q-${currentIdx}`).classList.add('active');
+
+        btnPrev.disabled = currentIdx === 0;
+        
+        if (currentIdx === questions.length - 1) {
+            btnNext.innerText = "Xem kết quả";
+        } else {
+            btnNext.innerText = "Tiếp theo";
+        }
+        
+        updateProgress();
+    }
+
+    btnNext.onclick = function() {
+        if (userAnswers[currentIdx] === null) {
+            alert("Vui lòng chọn một câu trả lời trước khi tiếp tục!");
+            return;
+        }
+        if (currentIdx === questions.length - 1) {
+            showResult();
+        } else {
+            changeQuestion(1);
+        }
+    };
+
+    function updateProgress() {
+        const percent = ((currentIdx + 1) / questions.length) * 100;
+        progressBar.style.width = `${percent}%`;
+    }
+
+    function showResult() {
+        quizContainer.style.display = 'none';
+        document.getElementById('nav-buttons').style.display = 'none';
+        document.getElementById('progress-container').style.display = 'none';
+        document.getElementById('sub-title').style.display = 'none';
+
+        const totalScore = userAnswers.reduce((sum, current) => sum + current, 0);
+        document.getElementById('total-score').innerText = totalScore;
+        
+        let status = "";
+        let advice = "";
+
+        if (totalScore <= 35) {
+            status = "Mức độ: Bình thường / Tâm lý ổn định 🌱";
+            advice = "Chúc mừng! Bạn đang kiểm soát áp lực cuộc sống rất tốt. Hãy tiếp tục duy trì lối sống lành mạnh, dành thời gian nghỉ ngơi và tập thể dục đều đặn.";
+        } else if (totalScore <= 75) {
+            status = "Mức độ: Lo âu / Căng thẳng Nhẹ 📊";
+            advice = "Bạn đang có dấu hiệu mệt mỏi và áp lực tích tụ. Hãy thiết lập lại thời gian biểu, học cách từ chối bớt công việc quá tải và thực hành các bài tập thiền hoặc hít thở sâu.";
+        } else if (totalScore <= 115) {
+            status = "Mức độ: Lo âu / Căng thẳng Vừa Phải ⚠️";
+            advice = "Mức độ căng thẳng của bạn đang ở mức đáng báo động và đã bắt đầu ảnh hưởng trực tiếp đến sinh hoạt. Bạn nên chia sẻ với người thân, hạn chế dùng chất kích thích và cân nhắc tìm kiếm lời khuyên từ chuyên gia tâm lý.";
+        } else {
+            status = "Mức độ: Căng thẳng / Lo âu Nghiêm Trọng 🚨";
+            advice = "Điểm số cho thấy hệ thần kinh của bạn đang rơi vào trạng thái quá tải nghiêm trọng. Để tránh trầm cảm hoặc kiệt sức hoàn toàn, bạn rất cần liên hệ với bác sĩ hoặc chuyên gia tâm lý sớm nhất có thể để có lộ trình hỗ trợ phù hợp.";
+        }
+
+        document.getElementById('result-status').innerText = status;
+        document.getElementById('result-advice').innerText = advice;
+        document.getElementById('result-box').style.display = 'block';
+    }
+
+    function restartQuiz() {
+        currentIdx = 0;
+        userAnswers = new Array(questions.length).fill(null);
+        
+        document.getElementById('quiz-container').style.display = 'block';
+        document.getElementById('nav-buttons').style.display = 'flex';
+        document.getElementById('progress-container').style.display = 'block';
+        document.getElementById('sub-title').style.display = 'block';
+        document.getElementById('result-box').style.display = 'none';
+        
+        btnPrev.disabled = true;
+        btnNext.innerText = "Tiếp theo";
+        
+        initQuiz();
+    }
+
+    initQuiz();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Tâm Lý - Đánh Giá Tính Cách & Thấu Cảm</title>
+    <style>
+        /* ĐỒI BẢNG MÀU THEO HÌNH ẢNH MẪU image_6a9201.jpg */
+        :root {
+            /* Nền gradient chuyển từ tím hồng sang xanh pastel */
+            --bg-gradient: linear-gradient(135deg, #dfcbfb 0%, #b6cbff 100%);
+            /* Màu tím hoa oải hương làm chủ đạo từ nút bấm trong ảnh */
+            --primary-color: #7a70e6; 
+            /* Tông tím dịu hơn làm màu phụ / tiến trình */
+            --secondary-color: #9187f5;
+            /* Màu chữ xám đen đậm tạo sự nhẹ nhàng sâu lắng */
+            --text-color: #1e293b;
+            /* Nền hộp nội dung màu trắng trong suốt dạng kính mờ (Glassmorphism) */
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --shadow: 0 8px 32px rgba(122, 112, 230, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            /* Thêm hiệu ứng blur nền kính mờ tăng độ sang trọng */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            color: var(--text-color);
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        header p {
+            text-align: center;
+            color: #475569;
+            margin-bottom: 30px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background-color: var(--primary-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Question Styles */
+        .question-box {
+            display: none;
+        }
+
+        .question-box.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #0f172a;
+        }
+
+        /* Options */
+        .options-list {
+            list-style: none;
+        }
+
+        .option-item {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .option-item:hover {
+            border-color: var(--secondary-color);
+            background-color: rgba(243, 240, 255, 0.8);
+        }
+
+        .option-item.selected {
+            border-color: var(--primary-color);
+            background-color: #f3f0ff;
+            color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(122, 112, 230, 0.15);
+        }
+
+        /* Buttons Navigation */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-prev {
+            background-color: rgba(0, 0, 0, 0.06);
+            color: #334155;
+        }
+
+        .btn-prev:hover { background-color: rgba(0, 0, 0, 0.1); }
+
+        .btn-next {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(122, 112, 230, 0.25);
+        }
+
+        .btn-next:hover { 
+            background-color: #655bc7; 
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Result Box */
+        #result-box {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 25px auto;
+            box-shadow: 0 8px 20px rgba(122, 112, 230, 0.3);
+        }
+
+        .result-status {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .result-advice {
+            color: #334155;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 18px;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 8px;
+            text-align: left;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            border-right: 1px solid rgba(255,255,255,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-restart {
+            margin-top: 25px;
+            background-color: var(--secondary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(145, 135, 245, 0.25);
+        }
+        .btn-restart:hover { background-color: #7d72eb; }
+    </style>
+</head>
+<body>
+    
+
+<div class="container">
+    <header>
+        <h1>Bộ Câu Hỏi Trắc Nghiệm Tính Cách & Thấu Cảm</h1>
+        <p id="sub-title">Hãy chọn câu trả lời đúng nhất phản ánh chân thực con người bạn.</p>
+        <div class="progress-container" id="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </header>
+
+    <!-- Khu vực hiển thị câu hỏi bằng JS -->
+    <div id="quiz-container"></div>
+
+    <!-- Thanh điều hướng câu hỏi -->
+    <div class="nav-buttons" id="nav-buttons">
+        <button class="btn-prev" id="btn-prev" onclick="changeQuestion(-1)" disabled>Quay lại</button>
+        <button class="btn-next" id="btn-next" onclick="changeQuestion(1)">Tiếp theo</button>
+    </div>
+
+    <!-- Khu vực hiển thị kết quả -->
+    <div id="result-box" style="display: none;">
+        <h2>Kết quả đánh giá của bạn</h2>
+        <div class="score-circle" id="total-score">0</div>
+        <div class="result-status" id="result-status">Mức độ</div>
+        <p class="result-advice" id="result-advice">Lời khuyên</p>
+        <button class="btn-restart" onclick="restartQuiz()">Thực hiện lại bài test</button>
+    </div>
+</div>
+
+<script>
+    // Đã thay thế toàn bộ bằng bộ câu hỏi thấu cảm mới từ file Word của bạn
+    const questions = [
+        "Tôi dễ dàng nhận ra tâm trạng của người khác qua ánh mắt hoặc nét mặt của họ.",
+        "Khi thấy một người đang khóc (dù là trên phim), tôi cũng có cảm giác nghẹn ngào.",
+        "Tôi thường đặt mình vào hoàn cảnh của người khác trước khi đưa ra nhận xét về họ.",
+        "Tôi có thể cảm nhận được bầu không khí căng thẳng trong phòng ngay khi vừa bước vào.",
+        "Khi bạn bè gặp chuyện buồn, tôi cảm thấy năng lượng của mình cũng bị giảm sút theo.",
+        "Tôi dễ dàng nhận ra ai đó đang cố tỏ ra ổn nhưng thực chất bên trong đang bất ổn.",
+        "Tôi cảm thấy đau lòng khi nhìn thấy những mảnh đời bất hạnh hoặc động vật bị bỏ rơi.",
+        "Tôi thường chú ý đến tông giọng của người đối diện để hiểu cảm xúc thật của họ hơn là chỉ nghe lời nói.",
+        "Khi nghe một câu chuyện bất công, tôi cảm thấy tức giận thay cho nạn nhân dù không quen biết họ.",
+        "Tôi có xu hướng lắng nghe trọn vẹn câu chuyện của người khác thay vì ngắt lời để đưa ra lời khuyên.",
+        "Tôi cảm thấy vui vẻ lây khi thấy những người xung quanh mình đang cười đùa hạnh phúc.",
+        "Tôi có thể đoán trước được điều gì sẽ làm tổn thương cảm xúc của một người cụ thể.",
+        "Khi ai đó bị tập thể cô lập, tôi luôn có thôi thúc muốn đến gần và bắt chuyện với họ.",
+        "Tôi hiểu rằng mỗi người đều có một góc khuất riêng và khó lòng phán xét ai đó một cách bề nổi.",
+        "Tôi thường xúc động mạnh trước những hành động tử tế nhỏ bé trong cuộc sống thường ngày.",
+        "Sau một ngày dài tiếp xúc với nhiều người, tôi cần một khoảng không gian yên tĩnh một mình để nạp lại năng lượng.",
+        "Tôi thích những cuộc trò chuyện sâu sắc, có ý nghĩa hơn là những cuộc tán gẫu xã giao thông thường.",
+        "Tôi thường suy nghĩ rất kỹ về tác động của lời nói trước khi phát ngôn để tránh làm người khác buồn.",
+        "Khi xảy ra tranh cãi, tôi có xu hướng tìm giải pháp hòa giải hơn là cố gắng chứng minh mình đúng.",
+        "Tôi cảm thấy thoải mái khi làm việc độc lập hơn là phải liên tục thảo luận nhóm.",
+        "Tôi rất nhạy cảm với những lời chỉ trích hoặc nhận xét tiêu cực từ người khác.",
+        "Tôi trân trọng những giá trị tinh thần và sự kết nối chân thành hơn là những giá trị vật chất hào nhoáng.",
+        "Tôi thích quan sát hành vi và phản ứng của mọi người xung quanh trong một buổi tiệc hơn là trở thành tâm điểm chú ý.",
+        "Tôi có xu hướng giữ lại những bí mật hoặc tâm sự thầm kín cho riêng mình thay vì chia sẻ rộng rãi.",
+        "Tôi dễ dàng tha thứ cho lỗi lầm của người khác nếu họ thể hiện sự hối lỗi chân thành.",
+        "Tôi cảm thấy kiệt sức if phải ở trong một môi trường quá ồn ào và có quá nhiều kích thích thị giác.",
+        "Khi bạn bè cần một nơi để tựa vào, tôi luôn sẵn sàng có mặt để lắng nghe mà không phán xét.",
+        "Tôi thường có xu hướng nhận lỗi về mình hoặc nhường nhịn để giữ gìn sự hòa hợp trong mối quan hệ.",
+        "Tôi thích lên kế hoạch chi tiết cho cuộc sống của mình thay vì để mọi thứ diễn ra ngẫu hứng.",
+        "Tôi dễ bị ảnh hưởng bởi những lời khen ngợi hoặc động viên từ những người tôi tôn trọng.",
+        "Tôi thích dành thời gian để tự phản tỉnh, viết nhật ký hoặc suy ngẫm về bản thân mỗi ngày.",
+        "Tôi cảm thấy khó khăn khi phải nói lời từ chối nếu có ai đó nhờ vả, ngay cả khi tôi đang bận.",
+        "Tôi tin rằng sự tử tế và lòng trắc ẩn là điều quan trọng nhất để duy trì một xã hội tốt đẹp.",
+        "Tôi thường có cảm giác lo lắng nhẹ khi phải bước vào một môi trường hoàn toàn mới với những con người mới.",
+        "Tôi đánh giá cao sự trung thực, ngay thẳng hơn là những lời nói dối ngọt ngào mang tính ngoại giao.",
+        "Tôi có thể kiềm chế cơn giận của mình để không làm tổn thương người đối diện khi xung đột xảy ra.",
+        "Khi ai đó đối xử tệ với tôi, tôi cố gắng tìm hiểu lý do đằng sau hành vi của họ thay vì lập tức trả đũa.",
+        "Tôi sẵn sàng thay đổi góc nhìn của mình nếu đối phương đưa ra những lập luận hợp lý và giàu cảm xúc.",
+        "Tôi thường xuyên hỗ trợ hoặc giúp đỡ người khác mà không mong cầu bất kỳ sự đền đáp nào.",
+        "Tôi có thể cảm nhận được sự kết nối thiêng liêng giữa con người với con người thông qua những trải nghiệm chung.",
+        "Tôi thấy mình có khả năng an ủi và làm dịu đi nỗi đau của người khác rất hiệu quả.",
+        "Khi thấy người khác gặp khó khăn, tôi không chỉ cảm thông mà còn cố gắng hành động thực tế để giúp họ.",
+        "Tôi tin rằng việc thấu hiểu động cơ của một người quan trọng hơn việc đánh giá kết quả hành động của họ.",
+        "Tôi biết cách tôn trọng ranh giới cá nhân của người khác và không tò mò sâu vào đời tư của họ nếu họ không muốn.",
+        "Tôi có thể duy trì sự bình tĩnh và thấu cảm ngay cả với những người có quan điểm hoàn toàn trái ngược với mình.",
+        "Tôi thường cảm thấy có trách nhiệm đối với cảm xúc và sự thoải mái của những người xung quanh trong một cuộc gặp mặt.",
+        "Tôi dễ dàng nhận ra và trân trọng những nỗ lực thầm lặng của người khác mà số đông thường bỏ qua.",
+        "Tôi không có xu hướng áp đặt tiêu chuẩn hay định kiến của mình lên lối sống của người khác.",
+        "Tôi học được cách yêu thương và thấu cảm với chính những khuyết điểm, tổn thương của bản thân mình.",
+        "Nhìn chung, khả năng thấu hiểu và kết nối cảm xúc sâu sắc với thế giới xung quanh là một phần không thể thiếu trong con người tôi."
+    ];
+
+    const options = [
+        { text: "Không bao giờ", score: 0 },
+        { text: "Thỉnh thoảng", score: 1 },
+        { text: "Thường xuyên", score: 2 },
+        { text: "Gần như luôn luôn", score: 3 }
+    ];
+
+    let currentIdx = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+
+    const quizContainer = document.getElementById('quiz-container');
+    const progressBar = document.getElementById('progress-bar');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+
+    function initQuiz() {
+        quizContainer.innerHTML = '';
+        questions.forEach((q, qIdx) => {
+            const qBox = document.createElement('div');
+            qBox.className = `question-box ${qIdx === 0 ? 'active' : ''}`;
+            qBox.id = `q-${qIdx}`;
+
+            const qText = document.createElement('div');
+            qText.className = 'question-text';
+            qText.innerText = `Câu ${qIdx + 1}: ${q}`;
+            qBox.appendChild(qText);
+
+            const optList = document.createElement('div');
+            optList.className = 'options-list';
+
+            options.forEach((opt) => {
+                const optItem = document.createElement('div');
+                optItem.className = 'option-item';
+                optItem.innerText = opt.text;
+                optItem.onclick = () => selectOption(qIdx, opt.score, optItem);
+                optList.appendChild(optItem);
+            });
+
+            qBox.appendChild(optList);
+            quizContainer.appendChild(qBox);
+        });
+        updateProgress();
+    }
+
+    function selectOption(qIdx, score, element) {
+        userAnswers[qIdx] = score;
+        const siblings = element.parentNode.querySelectorAll('.option-item');
+        siblings.forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+
+        setTimeout(() => {
+            if(currentIdx < questions.length - 1) {
+                changeQuestion(1);
+            }
+        }, 300);
+    }
+
+    function changeQuestion(direction) {
+        document.getElementById(`q-${currentIdx}`).classList.remove('active');
+        currentIdx += direction;
+        document.getElementById(`q-${currentIdx}`).classList.add('active');
+
+        btnPrev.disabled = currentIdx === 0;
+        
+        if (currentIdx === questions.length - 1) {
+            btnNext.innerText = "Xem kết quả";
+        } else {
+            btnNext.innerText = "Tiếp theo";
+        }
+        
+        updateProgress();
+    }
+
+    btnNext.onclick = function() {
+        if (userAnswers[currentIdx] === null) {
+            alert("Vui lòng chọn một câu trả lời trước khi tiếp tục!");
+            return;
+        }
+        if (currentIdx === questions.length - 1) {
+            showResult();
+        } else {
+            changeQuestion(1);
+        }
+    };
+
+    function updateProgress() {
+        const percent = ((currentIdx + 1) / questions.length) * 100;
+        progressBar.style.width = `${percent}%`;
+    }
+
+    // Tinh chỉnh lại đánh giá kết quả phù hợp với tính cách và lòng thấu cảm
+    function showResult() {
+        quizContainer.style.display = 'none';
+        document.getElementById('nav-buttons').style.display = 'none';
+        document.getElementById('progress-container').style.display = 'none';
+        document.getElementById('sub-title').style.display = 'none';
+
+        const totalScore = userAnswers.reduce((sum, current) => sum + current, 0);
+        document.getElementById('total-score').innerText = totalScore;
+        
+        let status = "";
+        let advice = "";
+
+        if (totalScore <= 35) {
+            status = "Chỉ số thấu cảm: Thấp / Thực tế & Độc lập 🧭";
+            advice = "Bạn là người sống lý trí, ít bị chi phối bởi cảm xúc của người khác. Bạn thích tập trung vào công việc thực tế hơn là các kết nối tinh thần phức tạp. Đôi khi, hãy thử mở lòng lắng nghe góc nhìn của người xung quanh nhiều hơn một chút nhé.";
+        } else if (totalScore <= 75) {
+            status = "Chỉ số thấu cảm: Trung bình / Cân bằng ⚖️";
+            advice = "Bạn giữ được sự cân bằng rất tốt giữa lý trí và cảm xúc. Bạn có khả năng lắng nghe và đồng cảm đúng lúc, đúng chỗ nhưng vẫn giữ vững được ranh giới cá nhân của bản thân mà không bị quá tải.";
+        } else if (totalScore <= 115) {
+            status = "Chỉ số thấu cảm: Cao / Nhạy bén & Ấm áp 🌸";
+            advice = "Bạn là một người có trái tim nhân hậu, sâu sắc và biết quan tâm. Bạn dễ dàng thấu hiểu nỗi lòng và sẵn sàng sẻ chia với những người xung quanh. Hãy chú ý dành thêm thời gian chăm sóc chính bản thân mình nữa nhé.";
+        } else {
+            status = "Chỉ số thấu cảm: Rất Cao / Người thấu cảm sâu sắc (Empath) ✨";
+            advice = "Khả năng kết nối tâm hồn và cảm nhận năng lượng của bạn cực kỳ mạnh mẽ. Bạn như một 'thỏi nam châm' hút hết mọi tâm tư của thế giới xung quanh. Hãy học cách bảo vệ năng lượng của mình để tránh bị mệt mỏi và kiệt sức vì quá thấu hiểu người khác.";
+        }
+
+        document.getElementById('result-status').innerText = status;
+        document.getElementById('result-advice').innerText = advice;
+        document.getElementById('result-box').style.display = 'block';
+    }
+
+    function restartQuiz() {
+        currentIdx = 0;
+        userAnswers = new Array(questions.length).fill(null);
+        
+        document.getElementById('quiz-container').style.display = 'block';
+        document.getElementById('nav-buttons').style.display = 'flex';
+        document.getElementById('progress-container').style.display = 'block';
+        document.getElementById('sub-title').style.display = 'block';
+        document.getElementById('result-box').style.display = 'none';
+        
+        btnPrev.disabled = true;
+        btnNext.innerText = "Tiếp theo";
+        
+        initQuiz();
+    }
+
+    initQuiz();
+</script>
+
+</body>
+</html>

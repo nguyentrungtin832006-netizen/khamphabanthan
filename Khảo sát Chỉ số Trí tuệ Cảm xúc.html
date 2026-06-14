@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Đánh Giá Trí Tuệ Cảm Xúc (EQ)</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #dfcbfb 0%, #b6cbff 100%);
+            --primary-color: #7a70e6; 
+            --secondary-color: #9187f5;
+            --text-color: #1e293b;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --shadow: 0 8px 32px rgba(122, 112, 230, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 680px;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-size: 24px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .sub-title {
+            text-align: center;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 24px;
+        }
+
+        .part-indicator {
+            display: inline-block;
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            border: 1px solid rgba(122, 112, 230, 0.15);
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e2e8f0;
+            height: 6px;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background-color: var(--primary-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-box {
+            animation: fadeIn 0.4s ease;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #0f172a;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            background: rgba(255, 255, 255, 0.6);
+            border: 2px solid #e2e8f0;
+            padding: 14px 20px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-item:hover {
+            background: #fff;
+            border-color: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .option-item.selected {
+            background: #fff;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(122, 112, 230, 0.1);
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-prev {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-prev:hover:not(:disabled) {
+            background-color: #cbd5e1;
+        }
+
+        .btn-prev:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-next {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-next:hover {
+            background-color: #655bc7;
+        }
+
+        .result-box {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-title {
+            font-size: 22px;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px dashed rgba(122, 112, 230, 0.2);
+            padding-bottom: 12px;
+        }
+
+        .score-group {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 16px;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .score-group-title {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 15px;
+        }
+
+        .score-desc {
+            font-size: 13.5px;
+            color: #475569;
+            margin-top: 4px;
+        }
+
+        .btn-restart {
+            background-color: var(--primary-color);
+            color: white;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="quiz-header">
+        <h1>Khảo Sát Trí Tuệ Cảm Xúc (EQ)</h1>
+        <p class="sub-title" id="sub-title">Hãy chọn câu trả lời phản ánh đúng nhất trạng thái thực tế của bạn</p>
+        <div class="text-center" style="text-align: center;">
+            <span class="part-indicator" id="part-indicator"></span>
+        </div>
+        <div class="progress-container" id="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <div id="quiz-container">
+        <div class="question-box">
+            <div class="question-text" id="question-text">Đang tải câu hỏi...</div>
+            <ul class="options-list" id="options-list">
+                </ul>
+        </div>
+    </div>
+
+    <div class="nav-buttons" id="nav-buttons">
+        <button class="btn-prev" id="btn-prev" onclick="goPrev()" disabled>Quay lại</button>
+        <button class="btn-next" id="btn-next" onclick="goNext()">Tiếp theo</button>
+    </div>
+
+    <div class="result-box" id="result-box">
+        <div class="result-title">📊 Kết Quả Phân Tích EQ</div>
+        <div id="result-details"></div>
+        <button class="btn-restart" onclick="restartQuiz()">Thực hiện lại bài khảo sát</button>
+    </div>
+</div>
+
+<script>
+    // Toàn bộ dữ liệu 50 câu hỏi mới chia làm 5 nhóm năng lực
+    const quizData = [
+        // Nhóm 1: Nhận thức cảm xúc bản thân (1-10)
+        { id: 1, part: 1, partName: "Nhận thức cảm xúc bản thân", text: "Tôi dễ dàng nhận ra cảm xúc của mình khi chúng xuất hiện." },
+        { id: 2, part: 1, partName: "Nhận thức cảm xúc bản thân", text: "Tôi hiểu nguyên nhân khiến mình vui, buồn hoặc giận dữ." },
+        { id: 3, part: 1, partName: "Nhận thức cảm xúc bản thân", text: "Tôi biết khi nào bản thân đang căng thẳng." },
+        { id: 4, part: 1, partName: "Nhận thức cảm xúc bản thân", text: "Tôi nhận thức được cảm xúc mạnh mẽ của mình." },
+        { id: 5, part: 1, partName: "Nhận thức cảm xúc bản thân", text: "Tôi nhận ra khi cảm xúc ảnh hưởng đến quyết định của mình." },
+        { id: 6, part: 1, partName: "Nhận thức cảm xúc bản thân", text: "Tôi có thể mô tả chính xác cảm xúc hiện tại của bản thân." },
+        { id: 7, part: 1, partName: "Nhận thức cảm xúc bản thân", text: "Tôi hiểu những điều khiến mình mất động lực." },
+        { id: 8, part: 1, partName: "Nhận thức cảm xúc bản thân", text: "Tôi biết được sự thay đổi cảm xúc trong ngày." },
+        { id: 9, part: 1, partName: "Nhận thức cảm xúc bản thân", text: "Tôi biết khi nào mình cần nghỉ ngơi để ổn định cảm xúc." },
+        { id: 10, part: 1, partName: "Nhận thức cảm xúc bản thân", text: "Tôi thường nhìn lại cảm xúc của mình sau các sự kiện quan trọng." },
+
+        // Nhóm 2: Kiểm soát cảm xúc (11-20)
+        { id: 11, part: 2, partName: "Kiểm soát cảm xúc", text: "Tôi giữ bình tĩnh khi gặp áp lực." },
+        { id: 12, part: 2, partName: "Kiểm soát cảm xúc", text: "Tôi không dễ nổi nóng trước những chuyện nhỏ." },
+        { id: 13, part: 2, partName: "Kiểm soát cảm xúc", text: "Tôi có thể kiềm chế phản ứng tiêu cực khi bị chỉ trích." },
+        { id: 14, part: 2, partName: "Kiểm soát cảm xúc", text: "Tôi suy nghĩ trước khi hành động trong lúc tức giận." },
+        { id: 15, part: 2, partName: "Kiểm soát cảm xúc", text: "Tôi nhanh chóng lấy lại cân bằng sau khi thất bại." },
+        { id: 16, part: 2, partName: "Kiểm soát cảm xúc", text: "Tôi ít để cảm xúc tiêu cực kéo dài quá lâu." },
+        { id: 17, part: 2, partName: "Kiểm soát cảm xúc", text: "Tôi có cách riêng để giảm bớt căng thẳng hiệu quả." },
+        { id: 18, part: 2, partName: "Kiểm soát cảm xúc", text: "Tôi không để cảm xúc ảnh hưởng quá nhiều đến công việc." },
+        { id: 19, part: 2, partName: "Kiểm soát cảm xúc", text: "Tôi có thể chấp nhận những điều ngoài tầm kiểm soát." },
+        { id: 20, part: 2, partName: "Kiểm soát cảm xúc", text: "Tôi giữ sự bình tĩnh khi xảy ra tranh cãi." },
+
+        // Nhóm 3: Động lực cá nhân (21-30)
+        { id: 21, part: 3, partName: "Động lực cá nhân", text: "Tôi kiên trì theo đuổi mục tiêu dài hạn." },
+        { id: 22, part: 3, partName: "Động lực cá nhân", text: "Tôi chủ động tìm cách cải thiện bản thân." },
+        { id: 23, part: 3, partName: "Động lực cá nhân", text: "Tôi vẫn cố gắng vượt qua khó khăn." },
+        { id: 24, part: 3, partName: "Động lực cá nhân", text: "Tôi thường tự tạo động lực cho bản thân." },
+        { id: 25, part: 3, partName: "Động lực cá nhân", text: "Tôi xem thất bại là cơ hội học hỏi." },
+        { id: 26, part: 3, partName: "Động lực cá nhân", text: "Tôi tập trung vào giải pháp thay vì bận tâm lo lắng." },
+        { id: 27, part: 3, partName: "Động lực cá nhân", text: "Tôi luôn cố gắng hoàn thành những gì đã bắt đầu." },
+        { id: 28, part: 3, partName: "Động lực cá nhân", text: "Tôi có thái độ tích cực trước thử thách mới." },
+        { id: 29, part: 3, partName: "Động lực cá nhân", text: "Tôi tin rằng bản thân có thể phát triển tốt hơn trong tương lai." },
+        { id: 30, part: 3, partName: "Động lực cá nhân", text: "Tôi duy trì động lực ngay cả khi chưa được công nhận." },
+
+        // Nhóm 4: Thấu cảm (31-40)
+        { id: 31, part: 4, partName: "Thấu cảm", text: "Tôi dễ dàng nhận biết được cảm xúc của người khác." },
+        { id: 32, part: 4, partName: "Thấu cảm", text: "Tôi biết lắng nghe mà không phán xét." },
+        { id: 33, part: 4, partName: "Thấu cảm", text: "Tôi quan tâm đến cảm xúc của những người xung quanh." },
+        { id: 34, part: 4, partName: "Thấu cảm", text: "Tôi cố gắng hiểu góc nhìn của người khác." },
+        { id: 35, part: 4, partName: "Thấu cảm", text: "Tôi nhận biết được khi ai đó đang buồn dù họ không nói ra." },
+        { id: 36, part: 4, partName: "Thấu cảm", text: "Tôi biểu lộ sự cảm thông khi người khác gặp khó khăn." },
+        { id: 37, part: 4, partName: "Thấu cảm", text: "Tôi tôn trọng cảm xúc khác biệt của người khác." },
+        { id: 38, part: 4, partName: "Thấu cảm", text: "Tôi sẵn sàng hỗ trợ khi người khác cần trợ giúp." },
+        { id: 39, part: 4, partName: "Thấu cảm", text: "Tôi hiểu rằng mỗi người đều có một hoàn cảnh riêng." },
+        { id: 40, part: 4, partName: "Thấu cảm", text: "Tôi dễ xây dựng sự đồng cảm với người khác." },
+
+        // Nhóm 5: Kỹ năng xã hội (41-50)
+        { id: 41, part: 5, partName: "Kỹ năng xã hội", text: "Tôi giao tiếp hiệu quả với nhiều nhóm người khác nhau." },
+        { id: 42, part: 5, partName: "Kỹ năng xã hội", text: "Tôi dễ dàng tương tác và làm việc nhóm." },
+        { id: 43, part: 5, partName: "Kỹ năng xã hội", text: "Tôi biết cách giải quyết xung đột một cách tích cực." },
+        { id: 44, part: 5, partName: "Kỹ năng xã hội", text: "Tôi tự tin bày tỏ quan điểm của mình." },
+        { id: 45, part: 5, partName: "Kỹ năng xã hội", text: "Tôi biết cách tạo thiện cảm với người mới quen." },
+        { id: 46, part: 5, partName: "Kỹ năng xã hội", text: "Tôi xử lý phản hồi tiêu cực một cách chuyên nghiệp." },
+        { id: 47, part: 5, partName: "Kỹ năng xã hội", text: "Tôi biết cách khích lệ và truyền cảm hứng cho người khác." },
+        { id: 48, part: 5, partName: "Kỹ năng xã hội", text: "Tôi duy trì được các mối quan hệ tích cực lâu dài." },
+        { id: 49, part: 5, partName: "Kỹ năng xã hội", text: "Tôi dễ dàng thích nghi với môi trường xã hội mới." },
+        { id: 50, part: 5, partName: "Kỹ năng xã hội", text: "Tôi thường được người khác đánh giá là người biết lắng nghe và thấu hiểu." }
+    ];
+
+    const options = [
+        { score: 1, text: "Hoàn toàn sai với tôi" },
+        { score: 2, text: "Ít đúng với tôi" },
+        { score: 3, text: "Khá đúng với tôi" },
+        { score: 4, text: "Rất đúng với tôi" }
+    ];
+
+    let currentIdx = 0;
+    let userAnswers = new Array(quizData.length).fill(null);
+
+    const questionText = document.getElementById('question-text');
+    const optionsList = document.getElementById('options-list');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const progressBar = document.getElementById('progress-bar');
+    const partIndicator = document.getElementById('part-indicator');
+
+    function initQuiz() {
+        showQuestion(currentIdx);
+    }
+
+    function showQuestion(idx) {
+        const q = quizData[idx];
+        questionText.innerText = `Câu ${idx + 1}: ${q.text}`;
+        partIndicator.innerText = `Phần ${q.part}: ${q.partName}`;
+        
+        // Cập nhật thanh tiến trình
+        const progressPercent = ((idx) / quizData.length) * 100;
+        progressBar.style.width = `${progressPercent}%`;
+
+        optionsList.innerHTML = '';
+        options.forEach(opt => {
+            const li = document.createElement('li');
+            li.className = 'option-item';
+            if(userAnswers[idx] === opt.score) {
+                li.classList.add('selected');
+            }
+            li.innerText = opt.text;
+            li.onclick = () => selectOption(idx, opt.score);
+            optionsList.appendChild(li);
+        });
+
+        btnPrev.disabled = idx === 0;
+        if (idx === quizData.length - 1) {
+            btnNext.innerText = "Hoàn thành";
+        } else {
+            btnNext.innerText = "Tiếp theo";
+        }
+    }
+
+    function selectOption(qIdx, score) {
+        userAnswers[qIdx] = score;
+        const items = optionsList.getElementsByClassName('option-item');
+        options.forEach((opt, oIdx) => {
+            if(opt.score === score) {
+                items[oIdx].classList.add('selected');
+            } else {
+                items[oIdx].classList.remove('selected');
+            }
+        });
+        
+        // Chuyển tự động sang câu tiếp theo sau một khoảng thời gian ngắn để mượt mà
+        setTimeout(() => {
+            if (currentIdx < quizData.length - 1) {
+                currentIdx++;
+                showQuestion(currentIdx);
+            }
+        }, 200);
+    }
+
+    function goPrev() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            showQuestion(currentIdx);
+        }
+    }
+
+    function goNext() {
+        if (userAnswers[currentIdx] === null) {
+            alert("Vui lòng chọn một câu trả lời trước khi tiếp tục!");
+            return;
+        }
+
+        if (currentIdx < quizData.length - 1) {
+            currentIdx++;
+            showQuestion(currentIdx);
+        } else {
+            showResult();
+        }
+    }
+
+    function getPartFeedback(score) {
+        if (score >= 32) return "Xuất sắc! Bạn sở hữu nền tảng năng lực cực kỳ vững chắc, có khả năng làm chủ lý trí hành vi và kết nối tinh tế.";
+        if (score >= 22) return "Khá tốt. Bạn có mức độ nhận diện và xử lý cảm xúc ổn định, tuy nhiên đôi khi vẫn bị tác động bởi môi trường ngoài.";
+        return "Cần cải thiện. Bạn dễ rơi vào trạng thái quá tải tinh thần, cần học cách thấu hiểu nội tâm và rèn luyện kỹ năng tương tác tốt hơn.";
+    }
+
+    function showResult() {
+        progressBar.style.width = '100%';
+        document.getElementById('quiz-container').style.display = 'none';
+        document.getElementById('nav-buttons').style.display = 'none';
+        document.getElementById('progress-container').style.display = 'none';
+        document.getElementById('sub-title').style.display = 'none';
+        partIndicator.style.display = 'none';
+
+        // Tính điểm theo từng nhóm phần (mỗi phần 10 câu)
+        let partScores = [0, 0, 0, 0, 0];
+        userAnswers.forEach((score, idx) => {
+            let pIdx = quizData[idx].part - 1;
+            partScores[pIdx] += score;
+        });
+
+        const partNames = [
+            "Nhận thức cảm xúc bản thân",
+            "Kiểm soát cảm xúc",
+            "Động lực cá nhân",
+            "Thấu cảm",
+            "Kỹ năng xã hội"
+        ];
+
+        let resultHTML = "";
+        for (let i = 0; i < 5; i++) {
+            resultHTML += `
+                <div class="score-group">
+                    <div class="score-group-title">Phần ${i+1}: ${partNames[i]} (${partScores[i]}/40 điểm)</div>
+                    <div class="score-desc">${getPartFeedback(partScores[i])}</div>
+                </div>
+            `;
+        }
+
+        document.getElementById('result-details').innerHTML = resultHTML;
+        document.getElementById('result-box').style.display = 'block';
+    }
+
+    function restartQuiz() {
+        currentIdx = 0;
+        userAnswers = new Array(quizData.length).fill(null);
+        
+        document.getElementById('quiz-container').style.display = 'block';
+        document.getElementById('nav-buttons').style.display = 'flex';
+        document.getElementById('progress-container').style.display = 'block';
+        document.getElementById('sub-title').style.display = 'block';
+        partIndicator.style.display = 'inline-block';
+        document.getElementById('result-box').style.display = 'none';
+        
+        initQuiz();
+    }
+
+    // Chạy khởi tạo bài khảo sát ban đầu
+    initQuiz();
+</script>
+
+</body>
+</html>

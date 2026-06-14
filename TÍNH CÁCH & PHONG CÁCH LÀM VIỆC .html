@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Tính Cách & Sức Khỏe Tinh Thần Nơi Công Sở</title>
+    <style>
+        /* ĐỒI BẢNG MÀU THEO HÌNH ẢNH MẪU */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #dfcbfb 0%, #b6cbff 100%);
+            --primary-color: #7a70e6; 
+            --secondary-color: #9187f5;
+            --text-color: #1e293b;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --shadow: 0 8px 32px rgba(122, 112, 230, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 35px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            color: var(--text-color);
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        header p {
+            text-align: center;
+            color: #475569;
+            margin-bottom: 15px;
+        }
+
+        .part-indicator {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+            background: rgba(122, 112, 230, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 0 auto 20px auto;
+        }
+        .part-container { text-align: center; }
+
+        /* Progress Bar */
+        .progress-container {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background-color: var(--primary-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Question Styles */
+        .question-box {
+            display: none;
+        }
+
+        .question-box.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-text {
+            font-size: 19px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #0f172a;
+        }
+
+        /* Options */
+        .options-list {
+            list-style: none;
+        }
+
+        .option-item {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .option-item:hover {
+            border-color: var(--secondary-color);
+            background-color: rgba(243, 240, 255, 0.8);
+        }
+
+        .option-item.selected {
+            border-color: var(--primary-color);
+            background-color: #f3f0ff;
+            color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(122, 112, 230, 0.15);
+        }
+
+        /* Buttons Navigation */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-prev {
+            background-color: rgba(0, 0, 0, 0.06);
+            color: #334155;
+        }
+
+        .btn-prev:hover { background-color: rgba(0, 0, 0, 0.1); }
+
+        .btn-next {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(122, 112, 230, 0.25);
+        }
+
+        .btn-next:hover { 
+            background-color: #655bc7; 
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Result Box */
+        #result-box {
+            text-align: left;
+        }
+        #result-box h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #0f172a;
+        }
+
+        .result-block {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .result-block h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(122, 112, 230, 0.1);
+            padding-bottom: 5px;
+        }
+
+        .score-summary {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .btn-restart {
+            display: block;
+            width: 100%;
+            margin-top: 25px;
+            background-color: var(--secondary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(145, 135, 245, 0.25);
+            text-align: center;
+        }
+        .btn-restart:hover { background-color: #7d72eb; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Đánh Giá Tính Cách & Sức Khỏe Tinh Thần Công Sở</h1>
+        <p id="sub-title">Hãy chọn phương án phản ánh đúng nhất thực tế ứng xử của bạn.</p>
+        <div class="part-container">
+            
+        </div>
+        <div class="progress-container" id="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </header>
+
+    <div id="quiz-container"></div>
+
+    <div class="nav-buttons" id="nav-buttons">
+        <button class="btn-prev" id="btn-prev" onclick="changeQuestion(-1)" disabled>Quay lại</button>
+        <button class="btn-next" id="btn-next" onclick="changeQuestion(1)">Tiếp theo</button>
+    </div>
+
+    <div id="result-box" style="display: none;">
+        <h2>Báo Cáo Phân Tích Kết Quả Của Bạn</h2>
+        
+        <div class="result-block">
+            <h3>📊 Phần 1: Xu Hướng Tính Cách & Làm Việc</h3>
+            <div id="p1-analysis" class="score-summary">Đang tính toán...</div>
+            <p id="p1-details" style="color: #475569; font-size: 15px;"></p>
+        </div>
+
+        <div class="result-block">
+            <h3>🌱 Phần 2: Năng Lực Thấu Cảm (Empathy)</h3>
+            <div id="p2-score" class="score-summary">Đang tính toán...</div>
+            <p id="p2-advice" style="color: #475569; font-size: 15px;"></p>
+        </div>
+
+        <div class="result-block">
+            <h3>🧠 Phần 3: Kiến Thức Sức Khỏe Tinh Thần</h3>
+            <div id="p3-score" class="score-summary">Đang tính toán...</div>
+            <p id="p3-advice" style="color: #475569; font-size: 15px;"></p>
+        </div>
+
+        <button class="btn-restart" onclick="restartQuiz()">Thực hiện lại bài test</button>
+    </div>
+</div>
+
+<script>
+    // Toàn bộ cơ sở dữ liệu 50 câu hỏi từ file Word
+    const quizData = [
+        {
+            q: "Khi đối mặt với một deadline rất gấp, bạn thường có xu hướng ứng xử thế nào?",
+            options: {
+                A: "Lập tức lên kế hoạch chi tiết, chia nhỏ công việc và tập trung cao độ để hoàn thành.",
+                B: "Cảm thấy áp lực nhưng sẽ cố gắng làm hết sức, đôi khi vừa làm vừa điều chỉnh.",
+                C: "Tìm kiếm sự hỗ trợ hoặc thảo luận với đồng nghiệp để cùng giải quyết.",
+                D: "Dễ bị hoảng loạn, trì hoãn vì áp lực và chỉ thực sự làm vào sát giờ G."
+            },
+            type: "personality", part: 1
+        },
+        {
+            q: "Trong các cuộc họp đội nhóm, bạn thường đóng vai trò gì?",
+            options: {
+                A: "Người dẫn dắt, đưa ra ý tưởng lớn và quyết định hướng đi.",
+                B: "Người lắng nghe, ghi chép và đóng góp ý kiến khi được hỏi.",
+                C: "Người kết nối, hòa giải các ý kiến trái chiều và tạo bầu không khí vui vẻ.",
+                D: "Người phản biện, tìm ra các lỗ hổng hoặc rủi ro trong kế hoạch."
+            },
+            type: "personality", part: 1
+        },
+        {
+            q: "Cách tốt nhất để bạn \"sạc\" lại năng lượng sau một tuần làm việc căng thẳng là gì?",
+            options: {
+                A: "Dành thời gian một mình ở nhà, đọc sách, xem phim hoặc chơi game để thư giãn.",
+                B: "Gặp gỡ bạn đông vui, đi ăn uống hoặc tham gia các hoạt động náo nhiệt.",
+                C: "Đi du lịch đổi gió hoặc tham gia các hoạt động thể thao vận động.",
+                D: "Vào bếp tự tay nấu những món ăn mình thích hoặc làm đồ thủ công."
+            },
+            type: "personality", part: 1
+        },
+        {
+            q: "Khi nhận được một phản hồi tiêu cực (góp ý thẳng thắn) từ cấp trên, bạn sẽ làm gì đầu tiên?",
+            options: {
+                A: "Tiếp thu ngay lập tức và tìm cách sửa đổi mà không suy nghĩ nhiều.",
+                B: "Cảm thấy bị tổn thương, tự trách bản thân hoặc lo lắng về năng lực của mình.",
+                C: "Phân tích xem lời góp ý đó có đúng hay không và tìm cơ hội thảo luận lại.",
+                D: "Cảm thấy bất mãn và cho rằng cấp trên đang định kiến hoặc khắt khe với mình."
+            },
+            type: "knowledge", ans: "C", part: 1
+        },
+        {
+            q: "Bạn thích làm việc trong một môi trường như thế nào?",
+            options: {
+                A: "Có quy trình rõ ràng, tính kỷ luật cao và mọi thứ đều có thể dự đoán trước.",
+                B: "Sáng tạo, tự do, linh hoạt về thời gian và không bị gò bó bởi quy tắc.",
+                C: "Đề cao tinh thần đồng đội, mọi người hỗ trợ, thân thiện và gắn kết với nhau.",
+                D: "Cạnh tranh cao, thách thức lớn và phần thưởng xứng đáng với năng lực cá nhân."
+            },
+            type: "personality", part: 1
+        },
+        {
+            q: "Khi một đồng nghiệp mới vào làm việc có phong cách hoàn toàn trái ngược với bạn, bạn sẽ:",
+            options: {
+                A: "Giữ khoảng cách, chỉ giao tiếp khi có công việc cần thiết.",
+                B: "Chủ động tìm hiểu góc nhìn của họ để tìm ra cách hợp tác ăn ý nhất.",
+                C: "Cố gắng thuyết phục họ thay đổi để thích nghi với cách làm việc của bạn.",
+                D: "Cảm thấy khó chịu và phàn nàn với những đồng nghiệp thân thiết khác."
+            },
+            type: "knowledge", ans: "B", part: 1
+        },
+        {
+            q: "Điểm mạnh lớn nhất của bạn trong giao tiếp công sở là gì?",
+            options: {
+                A: "Diễn đạt ngắn gọn, súc tích và đi thẳng vào trọng tâm vấn đề.",
+                B: "Biết cách lắng nghe, thấu hiểu và tạo cảm giác an tâm cho người đối diện.",
+                C: "Thuyết phục tốt, truyền cảm hứng và khơi dậy năng lượng tích cực.",
+                D: "Quan sát nhạy bén, phát hiện được những ẩn ý hoặc chi tiết nhỏ mà người khác bỏ qua."
+            },
+            type: "personality", part: 1
+        },
+        {
+            q: "Khi được giao một nhiệm vụ hoàn toàn mới và chưa từng có kinh nghiệm, bạn phản ứng thế nào?",
+            options: {
+                A: "Hào hứng đón nhận vì đây là cơ hội tốt để thử thách và phát triển bản thân.",
+                B: "Lo lắng nhưng vẫn nhận, sau đó sẽ âm thầm tự tìm tòi, nghiên cứu tài liệu.",
+                C: "Tìm kiếm sự trợ giúp hoặc hướng dẫn từ những người đi trước ngay lập tức.",
+                D: "Tìm lý do để từ chối hoặc chuyển giao nhiệm vụ đó cho người khác phù hợp hơn."
+            },
+            type: "personality", part: 1 // Chấp nhận A/B/C theo đáp án gợi ý, phân loại xu hướng
+        },
+        {
+            q: "Trong việc quản lý thời gian hằng ngày, bạn tự nhận thấy mình là người:",
+            options: {
+                A: "Luôn tuân thủ nghiêm ngặt lịch trình và danh sách việc cần làm (To-do list).",
+                B: "Làm việc theo cảm hứng, lúc năng suất rất cao, lúc lại trì hoãn.",
+                C: "Ưu tiên giải quyết các việc phát sinh đột xuất trước, việc cố định sau.",
+                D: "Thường xuyên cảm thấy quá tải và không biết phải bắt đầu từ đâu."
+            },
+            type: "personality", part: 1
+        },
+        {
+            q: "Khi xảy ra xung đột quyền lợi giữa bạn và một đồng nghiệp khác, xu hướng xử lý của bạn là:",
+            options: {
+                A: "Thẳng thắn tranh luận để bảo vệ quyền lợi chính đáng của mình đến cùng.",
+                B: "Nhường nhịn để giữ gìn hòa khí, chấp nhận chịu thiệt thòi một chút.",
+                C: "Tìm kiếm một giải pháp trung gian mà cả hai bên cùng có lợi (Win - Win).",
+                D: "Tránh né đối đầu trực tiếp và nhờ đến sự can thiệp, phân xử của cấp trên."
+            },
+            type: "knowledge", ans: "C", part: 1
+        },
+        {
+            q: "Bạn cảm thấy tự hào nhất về bản thân trong công việc khi nào?",
+            options: {
+                A: "Khi đạt được KPIs vượt trội hoặc nhận được phần thưởng, thăng tiến.",
+                B: "Khi giải quyết thành công một cuộc khủng hoảng hoặc một bài toán khó.",
+                C: "Khi giúp đỡ được đồng nghiệp tiến bộ hoặc gắn kết đội ngũ thành công.",
+                D: "Khi tạo ra được một sản phẩm, ý tưởng độc đáo mang đậm dấu ấn cá nhân."
+            },
+            type: "personality", part: 1
+        },
+        {
+            q: "Động lực lớn nhất thúc đẩy bạn đi làm mỗi ngày là gì?",
+            options: {
+                A: "Thu nhập, chế độ đãi ngộ và sự ổn định về mặt tài chính.",
+                B: "Cơ hội học hỏi kiến thức mới và thăng tiến trong sự nghiệp.",
+                C: "Môi trường làm việc vui vẻ, đồng nghiệp dễ thương và được là chính mình.",
+                D: "Sứ mệnh của công việc, cảm giác mình đang đóng góp giá trị cho xã hội."
+            },
+            type: "personality", part: 1
+        },
+        {
+            q: "Khi đứng trước một quyết định quan trọng, bạn thường dựa vào yếu tố nào nhiều nhất?",
+            options: {
+                A: "Số liệu thực tế, logic và các bằng chứng cụ thể.",
+                B: "Trực giác, cảm giác của bản thân và những trải nghiệm trong quá khứ.",
+                C: "Ý kiến đóng góp và sự đồng thuận của số đông những người xung quanh.",
+                D: "Các giá trị đạo đức và mức độ tác động của quyết định đó đến con người."
+            },
+            type: "personality", part: 1
+        },
+        {
+            q: "Cách bạn xử lý lỗi sai của bản thân trong công việc là:",
+            options: {
+                A: "Thừa nhận ngay lập tức, tự chịu trách nhiệm và chủ động tìm giải pháp khắc phục.",
+                B: "Cảm thấy hoảng sợ, lo lắng và cố gắng tìm cách sửa chữa âm thầm để không ai biết.",
+                C: "Tìm các yếu tố khách quan hoặc giải thích lý do vì sao lỗi sai đó xảy ra để giảm nhẹ.",
+                D: "Cảm thấy suy sụp tinh thần nghiêm trọng và mất đi sự tự tin trong nhiều ngày sau đó."
+            },
+            type: "knowledge", ans: "A", part: 1
+        },
+        {
+            q: "Bạn tự đánh giá mức độ kiên nhẫn của mình với các nhiệm vụ lặp đi lặp lại hằng ngày là:",
+            options: {
+                A: "Rất cao, bạn thích sự ổn định và có thể làm tốt các công việc mang tính quy trình.",
+                B: "Trung bình, bạn vẫn làm được nhưng luôn tìm cách cải tiến để làm nhanh hơn.",
+                C: "Thấp, bạn rất nhanh chán và luôn cần những trải nghiệm, nhiệm vụ mới để duy trì năng lượng.",
+                D: "Tùy thuộc vào tâm trạng và mức độ áp lực từ cấp trên tại thời điểm đó."
+            },
+            type: "personality", part: 1
+        },
+        {
+            q: "Một đồng nghiệp trong nhóm đang khóc ở góc văn phòng vì chuyện gia đình, bạn sẽ làm gì?",
+            options: {
+                A: "Đến ngồi cạnh, lắng nghe họ chia sẻ (nếu họ muốn) hoặc im lặng đưa cho họ một tờ khăn giấy.",
+                B: "Giả vờ không thấy để tôn trọng sự riêng tư của họ, tránh làm họ cảm thấy ngại ngùng.",
+                C: "Khuyên họ nên gác lại chuyện cá nhân để tập trung làm việc, tránh ảnh hưởng đến tiến độ nhóm.",
+                D: "Đi kể với vài đồng nghiệp thân thiết khác để cùng bàn tán xem họ đang gặp chuyện gì."
+            },
+            type: "knowledge", ans: "A", part: 2
+        },
+        {
+            q: "Khi lắng nghe một người khác trình bày quan điểm hoàn toàn trái ngược với niềm tin của bạn, bạn thường:",
+            options: {
+                A: "Cố gắng kìm chế định kiến, tập trung lắng nghe để hiểu tại sao họ lại suy nghĩ như vậy.",
+                B: "Ngắt lời họ ngay lập tức để chỉ ra những điểm vô lý hoặc sai lầm trong lập luận của họ.",
+                C: "Im lặng lắng nghe bề ngoài nhưng trong đầu đang chuẩn bị sẵn các lý lẽ để phản bác lại.",
+                D: "Bỏ đi hoặc tỏ thái độ thờ ơ, không muốn tiếp tục lãng phí thời gian vào cuộc hội thoại."
+            },
+            type: "knowledge", ans: "A", part: 2
+        },
+        {
+            q: "Thấu cảm trong môi trường công sở (Empathy) được định nghĩa chính xác nhất là gì?",
+            options: {
+                A: "Cảm thấy tội nghiệp, thương hại và tìm cách làm hộ hết công việc cho những đồng nghiệp gặp khó khăn.",
+                B: "Khả năng đặt mình vào vị trí của người khác để hiểu cảm xúc, suy nghĩ và góc nhìn của họ mà không phán xét.",
+                C: "Việc luôn luôn đồng ý với mọi ý kiến, cảm xúc của đồng nghiệp bất kể đúng sai để giữ hòa khí.",
+                D: "Khả năng đọc vị tâm lý đối phương để thao túng hành vi của họ theo mục đích cá nhân."
+            },
+            type: "knowledge", ans: "B", part: 2
+        },
+        {
+            q: "Khi một thành viên trong đội nhóm của bạn đột ngột giảm sút hiệu suất làm việc, phản ứng đầu tiên của bạn là:",
+            options: {
+                A: "Đánh giá họ lười biếng, thiếu trách nhiệm và yêu cầu cấp trên kỷ luật.",
+                B: "Trực tiếp nói chuyện riêng với họ một cách chân thành để tìm hiểu xem họ có đang gặp khó khăn gì không.",
+                C: "Gánh vác phần việc của họ mà không hỏi lý do, nhưng trong lòng cảm thấy rất ấm ức.",
+                D: "Ngó lơ vì đó là việc của họ, miễn là không ảnh hưởng quá nghiêm trọng đến quyền lợi của bạn."
+            },
+            type: "knowledge", ans: "B", part: 2
+        },
+        {
+            q: "Khi giao tiếp, bạn làm cách nào để nhận biết một đồng nghiệp đang cảm thấy không thoải mái dù họ nói \"Tôi ổn\"?",
+            options: {
+                A: "Chỉ tin vào lời họ nói vì bạn không có thời gian để suy đoán lung tung.",
+                B: "Quan sát ngôn ngữ cơ thể của họ như: ánh mắt né tránh, khoanh tay trước ngực, giọng điệu ngập ngừng.",
+                C: "Hỏi dồn dập cho đến khi họ chịu nói ra sự truth hoặc lý do thực sự thì thôi.",
+                D: "Đi hỏi những người xung quanh xem người đó gần đây có biểu hiện gì lạ hay không."
+            },
+            type: "knowledge", ans: "B", part: 2
+        },
+        {
+            q: "Bạn vừa hoàn thành xuất sắc dự án nhưng một đồng nghiệp cùng làm lại vô tình bị cấp trên bỏ quên không khen thưởng, bạn sẽ:",
+            options: {
+                A: "Thỏa mãn với thành tích của riêng mình, chuyện của người khác không phải việc của bạn.",
+                B: "Chủ động lên tiếng nhắc nhở cấp trên về đóng góp quan trọng của đồng nghiệp đó trong dự án.",
+                C: "An ủi đồng nghiệp đó sau buổi họp rằng \"Lần sau sếp sẽ nhớ đến cậu thôi mà\".",
+                D: "Cảm thấy áy náy nhưng chọn cách im lặng vì sợ làm mất lòng cấp trên hoặc gây rắc rối."
+            },
+            type: "knowledge", ans: "B", part: 2
+        },
+        {
+            q: "Mức độ thấu cảm của một người quản lý thể hiện rõ nhất qua hành động nào dưới đây?",
+            options: {
+                A: "Thường xuyên tặng quà, tổ chức tiệc tùng ăn uống cho nhân viên bằng quỹ công ty.",
+                B: "Sẵn sàng lắng nghe phản hồi ngược từ nhân viên và điều chỉnh khối lượng công việc khi họ quá tải.",
+                C: "Giảm bớt toàn bộ áp lực và KPIs để nhân viên cảm thấy thoải mái, không bao giờ bị căng thẳng.",
+                D: "Giám sát chặt chẽ từng giờ làm việc để đảm bảo nhân viên không gặp lỗi sai hay áp lực lớn."
+            },
+            type: "knowledge", ans: "B", part: 2
+        },
+        {
+            q: "Khi một khách hàng đang vô cùng giận dữ và lớn tiếng quát tháo vì lỗi hệ thống, bước đầu tiên bạn nên làm là gì?",
+            options: {
+                A: "Lớn tiếng lại để bảo vệ danh dự của bản thân và uy tín của công ty.",
+                B: "Im lặng lắng nghe, ghi nhận sự thất vọng của họ và nói lời xin lỗi một cách chân thành trước khi giải thích.",
+                C: "Ngắt lời khách hàng và lập tức đưa ra các điều khoản hợp đồng để chứng minh công ty không sai.",
+                D: "Chuyển cuộc gọi hoặc đẩy trách nhiệm giải quyết sang cho một đồng nghiệp hoặc bộ phận khác."
+            },
+            type: "knowledge", ans: "B", part: 2
+        },
+        {
+            q: "Bạn nhận thấy một đồng nghiệp hướng nội rất ngại phát biểu trong cuộc họp lớn. Để giúp họ, bạn sẽ:",
+            options: {
+                A: "Bất ngờ gọi tên họ trước toàn thể cuộc họp để ép họ phải đưa ra ý kiến.",
+                B: "Nói chuyện riêng trước họp hoặc nhắn tin gợi mở để họ thoải mái chia sẻ ý tưởng qua văn bản.",
+                C: "Bỏ qua họ hoàn toàn vì cho rằng họ không có ý kiến gì đóng góp cho dự án.",
+                D: "Nói đùa trước mặt mọi người về sự rụt rè của họ để không khí bớt căng thẳng hơn."
+            },
+            type: "knowledge", ans: "B", part: 2
+        },
+        {
+            q: "Hành vi nào sau đây là biểu hiện của \"Sự thấu cảm độc hại\" (Hyper-empathy) tại nơi làm việc?",
+            options: {
+                A: "Lắng nghe đồng nghiệp chia sẻ và đưa ra những lời khuyên mang tính xây dựng.",
+                B: "Quá cuốn theo cảm xúc tiêu cực của người khác đến mức kiệt sức và ảnh hưởng đến công việc của chính mình.",
+                C: "Biết cách từ chối khéo léo khi bản thân đang bận rộn để tập trung hoàn thành nhiệm vụ.",
+                D: "Cảm thấy vui vẻ và hạnh phúc khi thấy đội nhóm đạt được những thành tích xuất sắc."
+            },
+            type: "knowledge", ans: "B", part: 2
+        },
+        {
+            q: "Khi bạn vô ý đưa ra một lời nhận xét khiến đồng nghiệp cảm thấy bị xúc phạm, cách ứng xử thấu cảm nhất là:",
+            options: {
+                A: "Giải thích rằng bạn chỉ đang nói đùa và cho rằng họ đang quá nhạy cảm.",
+                B: "Chủ động gặp riêng, chân thành xin lỗi vì sự thiếu tinh tế của mình và rút kinh nghiệm sâu sắc.",
+                C: "Tránh mặt họ một thời gian dài cho đến khi họ tự nguôi giận và mọi chuyện qua đi.",
+                D: "Nói với người khác rằng bạn không hề có ý xấu để nhờ họ thanh minh hộ bản thân."
+            },
+            type: "knowledge", ans: "B", part: 2
+        },
+        {
+            q: "Khi thảo luận nhóm, nếu có một ý kiến bị tất cả mọi người bác bỏ ngay lập tức, bạn sẽ làm gì?",
+            options: {
+                A: "Đồng ý với số đông để cuộc họp diễn ra nhanh chóng, tiết kiệm thời gian.",
+                B: "Đề nghị mọi người dừng lại vài phút để người đó giải thích rõ hơn về logic đằng sau ý tưởng của họ.",
+                C: "Chê bai ý tưởng đó công khai để chứng tỏ năng lực chuyên môn của mình tốt hơn.",
+                D: "Nhắn tin an ủi riêng sau cuộc họp nhưng không có động thái gì hỗ trợ trong lúc họp."
+            },
+            type: "knowledge", ans: "B", part: 2
+        },
+        {
+            q: "Khả năng tự thấu cảm với chính bản thân mình (Self-empathy) tại nơi làm việc có nghĩa là:",
+            options: {
+                A: "Tự dung túng cho những thói quen xấu, sự lười biếng và trì hoãn công việc của bản thân.",
+                B: "Nhận biết được giới hạn chịu đựng của bản thân, chấp nhận những cảm xúc tiêu cực và biết cách tự chăm sóc.",
+                C: "Luôn ép buộc bản thân phải hoàn hảo, không được phép mắc bất kỳ sai lầm nào dù là nhỏ nhất.",
+                D: "So sánh bản thân với những người giỏi hơn để lấy đó làm động lực gia tăng áp lực lên chính mình."
+            },
+            type: "knowledge", ans: "B", part: 2
+        },
+        {
+            q: "Biểu hiện nào chứng tỏ một doanh nghiệp có văn hóa thấu cảm cao?",
+            options: {
+                A: "Nhân viên sẵn sàng chia sẻ về những sai lầm, khó khăn của mình mà không sợ bị phán xét hay trừng phạt.",
+                B: "Công ty có phòng giải trí rất lớn, nhiều đồ ăn miễn phí và giờ làm việc hoàn toàn tự do.",
+                C: "Cấp trên không bao giờ kiểm tra tiến độ công việc và để nhân viên tự làm mọi thứ họ muốn.",
+                D: "Mọi người luôn nói lời khen ngợi nhau trước mặt nhưng bằng mặt không bằng lòng."
+            },
+            type: "knowledge", ans: "A", part: 2
+        },
+        {
+            q: "Một đồng nghiệp chia sẻ rằng họ đang cảm thấy bị cô lập trong công ty. Câu nói nào thể hiện sự thấu cảm tốt nhất?",
+            options: {
+                A: "\"Chắc tại cậu ít nói quá đấy, cứ chủ động bắt chuyện với mọi người là hết ngay thôi.\"",
+                B: "\"Tôi hiểu cảm giác đó của cậu, nó thực sự rất khó chịu. Cậu có muốn chia sẻ kỹ hơn không?\"",
+                C: "\"Thôi kệ đi, đi làm kiếm tiền chứ có phải đi tìm bạn đâu mà quan trọng hóa vấn đề thế.\"",
+                D: "\"Ôi dào, ở đây ai mà chẳng thế, làm lâu dần rồi cậu cũng sẽ quen với việc đó thôi.\""
+            },
+            type: "knowledge", ans: "B", part: 2
+        },
+        {
+            q: "Hội chứng \"Burnout\" (Kiệt sức nghề nghiệp) được Tổ chức Y tế Thế giới (WHO) công nhận có biểu hiện chính nào?",
+            options: {
+                A: "Chỉ đơn thuần là cảm giác mệt mỏi thể xác sau một ngày làm việc tăng ca vất vả.",
+                B: "Cạn kiệt năng lượng, hoài nghi/tiêu cực về công việc và giảm hiệu suất làm việc rõ rệt.",
+                C: "Cảm thấy chán việc tạm thời và chỉ cần nghỉ ngơi 1-2 ngày cuối tuần là phục hồi hoàn toàn.",
+                D: "Thường xuyên muốn thay đổi môi trường làm việc để tìm kiếm mức lương cao hơn."
+            },
+            type: "knowledge", ans: "B", part: 3
+        },
+        {
+            q: "Đâu là nguyên nhân cốt lõi dẫn đến tình trạng căng thẳng (Stress) kéo dài ở nhân viên văn phòng?",
+            options: {
+                A: "Khối lượng công việc quá tải, thiếu sự hỗ trợ từ cấp trên và mất cân bằng cuộc sống.",
+                B: "Do bản thân nhân viên có năng lực chuyên môn quá yếu kém, không thể làm được việc.",
+                C: "Do công ty không tổ chức các hoạt động team building định kỳ hằng tháng.",
+                D: "Do thời tiết thay đổi thất thường ảnh hưởng đến tâm trạng khi đi làm."
+            },
+            type: "knowledge", ans: "A", part: 3
+        },
+        {
+            q: "\"An toàn tâm lý\" (Psychological Safety) tại nơi làm việc là gì?",
+            options: {
+                A: "Nơi làm việc có trang bị đầy đủ hệ thống phòng cháy chữa cháy và bảo vệ nghiêm ngặt.",
+                B: "Môi trường mà nhân viên có thể tự do lên tiếng, đặt câu hỏi, đưa ra ý tưởng hoặc thừa nhận sai lầm mà không sợ bị trừng phạt.",
+                C: "Môi trường mà mọi người tuyệt đối không bao giờ xảy ra bất kỳ sự tranh luận hay bất đồng ý kiến nào.",
+                D: "Việc bảo mật tuyệt đối các thông tin cá nhân và tài khoản ngân hàng của nhân viên."
+            },
+            type: "knowledge", ans: "B", part: 3
+        },
+        {
+            q: "Khi bạn nhận thấy mình có các dấu hiệu như mất ngủ kéo dài, chán ăn, mất hứng thú với công việc, bạn nên làm gì?",
+            options: {
+                A: "Ép bản thân làm việc nhiều hơn nữa để quên đi những cảm giác tiêu cực đó.",
+                B: "Xin nghỉ phép một vài ngày để nghỉ ngơi, nếu không đỡ thì nên tìm kiếm sự hỗ trợ từ chuyên gia tâm lý.",
+                C: "Lạm dụng các chất kích thích như cà phê, thuốc lá hoặc rượu bia để lấy lại năng lượng làm việc.",
+                D: "Âm thầm nộp đơn xin nghỉ việc ngay lập tức mà không cần suy nghĩ đến hậu quả tài chính."
+            },
+            type: "knowledge", ans: "B", part: 3
+        },
+        {
+            q: "Để thiết lập ranh giới lành mạnh (Boundaries) giữa công việc và cuộc sống cá nhân, bạn nên:",
+            options: {
+                A: "Luôn đặt ra quy tắc rõ ràng về khung giờ phản hồi tin nhắn/email công việc, trừ trường hợp khẩn cấp đặc biệt.",
+                B: "Luôn mang máy tính về nhà và kiểm tra email 5 phút một lần trước khi đi ngủ để an tâm.",
+                C: "Sẵn sàng nhận mọi cuộc gọi của sếp vào lúc nửa đêm để chứng tỏ lòng trung thành.",
+                D: "Chặn hoàn toàn tất cả số điện thoại và tài khoản mạng xã hội của đồng nghiệp sau giờ hành chính."
+            },
+            type: "knowledge", ans: "A", part: 3
+        },
+        {
+            q: "Khi một nhân viên gặp áp lực quá lớn từ gia đình, điều đó ảnh hưởng thế nào đến sức khỏe tinh thần tại công sở?",
+            options: {
+                A: "Không ảnh hưởng gì vì con người có khả năng tách biệt hoàn toàn cảm xúc gia đình và công việc.",
+                B: "Gây suy giảm khả năng tập trung, dễ cáu gắt với đồng nghiệp và giảm hiệu suất công việc chung.",
+                C: "Giúp họ làm việc năng suất hơn vì muốn lấy công việc làm nơi trốn tránh thực tại.",
+                D: "Chỉ ảnh hưởng đến các mối quan hệ cá nhân chứ không ảnh hưởng đến tiến độ dự án."
+            },
+            type: "knowledge", ans: "B", part: 3
+        },
+        {
+            q: "Khái niệm \"Presenteeism\" (Đi làm nhưng không làm) trong sức khỏe tinh thần công sở nghĩa là gì?",
+            options: {
+                A: "Việc nhân viên thường xuyên đi làm muộn và về sớm hơn giờ quy định của công ty.",
+                B: "Nhân viên có mặt tại văn phòng đầy đủ nhưng do gặp vấn đề sức khỏe/tâm lý nên không thể tập trung làm việc hiệu quả.",
+                C: "Hiện tượng nhân viên trốn việc đi ra ngoài uống cà phê trong giờ hành chính.",
+                D: "Việc nhân viên thường xuyên xin nghỉ ốm dù cơ thể hoàn toàn khỏe mạnh."
+            },
+            type: "knowledge", ans: "B", part: 3
+        },
+        {
+            q: "Biện pháp nào dưới đây giúp giảm thiểu Stress ngắn hạn hiệu quả nhất ngay tại bàn làm việc?",
+            options: {
+                A: "Ăn thật nhiều đồ ngọt, bánh kẹo hoặc uống các loại nước có ga để giải tỏa.",
+                B: "Áp dụng kỹ thuật thở sâu (ví dụ thở bụng theo nhịp 4-7-8) hoặc đứng dậy đi lại nhẹ nhàng vài phút.",
+                C: "Lướt mạng xã hội liên tục để đọc các tin tức giải trí giật gân.",
+                D: "Tranh thủ chợp mắt ngay tại chỗ trong khoảng thời gian từ 1 đến 2 tiếng đồng hồ."
+            },
+            type: "knowledge", ans: "B", part: 3
+        },
+        {
+            q: "Khi cấp trên giao thêm việc vượt quá khả năng chịu đựng hiện tại của bạn, cách xử lý khôn ngoan nhất là:",
+            options: {
+                A: "Im lặng nhận việc rồi sau đó làm không tốt hoặc trễ deadline để sếp tự hiểu.",
+                B: "Gặp riêng sếp, trình bày danh sách việc hiện tại, mức độ quá tải và đề xuất thứ tự ưu tiên hoặc xin thêm thời gian.",
+                C: "Đùng đùng nổi giận, tranh cãi gay gắt với sếp ngay giữa văn phòng để phản đối.",
+                D: "Đẩy bớt phần việc đó sang cho các đồng nghiệp cấp dưới hoặc người mới vào làm."
+            },
+            type: "knowledge", ans: "B", part: 3
+        },
+        {
+            q: "\"Tích cực độc hại\" (Toxic Positivity) tại nơi làm việc thể hiện qua câu nói nào?",
+            options: {
+                A: "\"Dự án này khó khăn thật đấy, chúng ta cùng ngồi lại tìm cách giải quyết xem sao.\"",
+                B: "\"Đừng buồn nữa, mọi chuyện rồi sẽ ổn thôi, hãy luôn lạc quan và nhìn vào mặt tích cực của cuộc sống!\"",
+                C: "\"Tôi biết cậu đang rất áp lực, nếu cần tôi có thể hỗ trợ cậu một tay.\"",
+                D: "\"Thất bại lần này là một bài học đắt giá để đội ngũ chúng ta hoàn thiện quy trình.\""
+            },
+            type: "knowledge", ans: "B", part: 3
+        },
+        {
+            q: "Việc tập luyện thể dục thể thao đều đặn có tác động thế nào đến sức khỏe tinh thần của người đi làm?",
+            options: {
+                A: "Làm cơ thể mệt mỏi thêm và khiến năng suất làm việc ngày hôm sau bị giảm sút.",
+                B: "Giúp giải phóng Endorphin (hormone hạnh phúc), giảm Cortisol (hormone căng thẳng) và cải thiện giấc ngủ.",
+                C: "Chỉ có tác dụng giảm cân, cải thiện vóc dáng chứ không có liên quan gì đến trí não.",
+                D: "Làm mất thời gian nghỉ ngơi quý báu đáng lẽ nên dành cho việc hoàn thành KPIs công ty."
+            },
+            type: "knowledge", ans: "B", part: 3
+        },
+        {
+            q: "Đâu là biểu hiện của một \"Môi trường làm việc độc hại\" (Toxic Workplace)?",
+            options: {
+                A: "Sếp đòi hỏi cao về chất lượng công việc và thường xuyên kiểm tra tiến độ dự án.",
+                B: "Đồng nghiệp chia bè phái, nói xấu sau lưng, đổ lỗi lẫn nhau và thiếu sự công nhận.",
+                C: "Công ty thường xuyên thay đổi quy trình làm việc để tối ưu hóa hiệu suất kinh doanh.",
+                D: "Các cuộc họp diễn ra căng thẳng vì mọi người tranh luận nảy lửa để tìm giải pháp tốt nhất."
+            },
+            type: "knowledge", ans: "B", part: 3
+        },
+        {
+            q: "Khi một người đồng nghiệp tâm sự rằng họ có ý định tự hại hoặc tự tử do áp lực công việc, hành động đúng đắn nhất là:",
+            options: {
+                A: "Coi đó là lời nói đùa lúc nóng giận và khuyên họ đi ngủ một giấc là hết.",
+                B: "Giữ bí mật tuyệt đối vì đã hứa với họ, không được nói cho bất kỳ ai biết.",
+                C: "Nghiêm túc lắng nghe, không phán xét và lập tức liên hệ với người thân của họ hoặc các bộ phận có chuyên môn để hỗ trợ.",
+                D: "Tránh xa họ ra vì sợ rước họa vào thân hoặc bị vạ lây những năng lượng tiêu cực."
+            },
+            type: "knowledge", ans: "C", part: 3
+        },
+        {
+            q: "Hội chứng \"Kẻ giả mạo\" (Imposter Syndrome) tại nơi làm việc khiến con người luôn:",
+            options: {
+                A: "Nghi ngờ năng lực của bản thân, cho rằng thành công của mình chỉ là do may mắn và sợ bị phát hiện mình là kẻ kém cỏi.",
+                B: "Tự cao tự đại, luôn cho rằng mình giỏi nhất và coi thường tất cả mọi người xung quanh.",
+                C: "Tìm cách giả mạo chữ ký hoặc hồ sơ, giấy tờ của người khác để trục lợi cá nhân.",
+                D: "Cố tình bắt chước phong cách ăn mặc, nói năng của các vị lãnh đạo cấp cao trong công ty."
+            },
+            type: "knowledge", ans: "A", part: 3
+        },
+        {
+            q: "Để xây dựng \"Sức bật tinh thần\" (Resilience) trước những khủng hoảng trong công việc, bạn nên rèn luyện điều gì?",
+            options: {
+                A: "Khability chịu đựng mọi bất công mà không bao giờ lên tiếng phản kháng hay phàn nàn.",
+                B: "Tư duy phát triển (Growth Mindset), nhìn nhận thất bại như một cơ hội học hỏi và thích ứng linh hoạt.",
+                C: "Thói quen thay đổi công việc liên tục mỗi khi gặp phải một khó khăn nhỏ.",
+                D: "Việc không bao giờ đặt quá nhiều tâm huyết hay kỳ vọng vào bất kỳ dự án nào mình làm."
+            },
+            type: "knowledge", ans: "B", part: 3
+        },
+        {
+            q: "Việc công ty cung cấp các chương trình hỗ trợ nhân viên (EAP - Employee Assistance Program) mang lại lợi ích gì?",
+            options: {
+                A: "Giúp nhân viên có nơi để khiếu nại, tố cáo và nói xấu cấp trên một cách hợp pháp.",
+                B: "Cung cấp các dịch vụ tư vấn tâm lý, sức khỏe và pháp lý bảo mật giúp nhân viên giải tỏa áp lực cuộc sống.",
+                C: "Giúp ban giám đốc kiểm soát chặt chẽ đời tư và các mối quan hệ cá nhân của nhân viên.",
+                D: "Thay thế hoàn toàn cho việc tăng lương và chi trả các khoản tiền thưởng hằng năm."
+            },
+            type: "knowledge", ans: "B", part: 3
+        },
+        {
+            q: "Một giấc ngủ ngon (từ 7-8 tiếng) có vai trò gì đối với sức khỏe tinh thần của người lao động?",
+            options: {
+                A: "Giúp não bộ tái tạo, củng cố trí nhớ, tăng khả năng tập trung và điều hòa cảm xúc tốt hơn.",
+                B: "Chỉ giúp cơ thể đỡ mỏi cơ chứ không có tác dụng gì đối với các hoạt động tư duy phức tạp.",
+                C: "Là biểu hiện của sự thiếu ý chí cầu tiến và lười biếng trong việc phát triển sự nghiệp.",
+                D: "Làm giảm thời gian làm việc ban đêm khiến tiến độ dự án dễ bị chậm trễ."
+            },
+            type: "knowledge", ans: "A", part: 3
+        },
+        {
+            q: "\"Chủ nghĩa hoàn hảo\" (Perfectionism) thái quá có thể gây hại gì cho sức khỏe tinh thần tại công sở?",
+            options: {
+                A: "Giúp công việc luôn đạt chất lượng tuyệt đối không bao giờ xảy ra sai sót.",
+                B: "Gây ra sự lo âu thường trực, sợ thất bại dẫn đến trì hoãn công việc và kiệt sức tinh thần.",
+                C: "Giúp bạn nhận được sự yêu mến và nể trọng tuyệt đối từ tất cả đồng nghiệp.",
+                D: "Làm tăng lương và thúc đẩy quá trình thăng tiến diễn ra nhanh gấp đôi bình trung bình."
+            },
+            type: "knowledge", ans: "B", part: 3
+        },
+        {
+            q: "Khi cảm thấy môi trường làm việc hiện tại đang hủy hoại nghiêm trọng sức khỏe tinh thần của mình, bước đi cuối cùng bạn nên cân nhắc là gì?",
+            options: {
+                A: "Chấp nhận sống chung với lũ và hy sinh sức khỏe để đổi lấy sự ổn định tài chính.",
+                B: "Lên kế hoạch tài chính an toàn, chuẩn bị CV và tìm kiếm một cơ hội việc làm mới lành mạnh hơn.",
+                C: "Đi làm muộn, pháhoại ngầm các dự án của công ty để trả đũa trước khi nghỉ.",
+                D: "Kêu gọi toàn bộ nhân viên trong công ty đồng loạt nghỉ việc để biểu tình phản đối."
+            },
+            type: "knowledge", ans: "B", part: 3
+        },
+        {
+            q: "Nhận thức đúng đắn nhất về Sức khỏe Tinh thần (Mental Health) nơi công sở là gì?",
+            options: {
+                A: "Sức khỏe tinh thần là chuyện cá nhân, nhân viên phải tự giải quyết và không liên quan đến trách nhiệm của công ty.",
+                B: "Chỉ những người có tâm lý yếu đuối, kém cỏi mới gặp các vấn đề về sức khỏe tinh thần khi đi làm.",
+                C: "Sức khỏe tinh thần quan trọng ngang bằng với sức khỏe thể chất, cần được cả nhân viên và doanh nghiệp chủ động chăm sóc, bảo vệ.",
+                D: "Chăm sóc sức khỏe tinh thần chỉ là xu hướng nhất thời của giới trẻ và sẽ sớm bị quên lãng."
+            },
+            type: "knowledge", ans: "C", part: 3
+        }
+    ];
+
+    let currentIdx = 0;
+    let userAnswers = new Array(quizData.length).fill(null);
+
+    const quizContainer = document.getElementById('quiz-container');
+    const progressBar = document.getElementById('progress-bar');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const partIndicator = document.getElementById('part-indicator');
+
+    function initQuiz() {
+        quizContainer.innerHTML = '';
+        quizData.forEach((data, idx) => {
+            const qBox = document.createElement('div');
+            qBox.className = `question-box ${idx === 0 ? 'active' : ''}`;
+            qBox.id = `q-${idx}`;
+
+            const qText = document.createElement('div');
+            qText.className = 'question-text';
+            qText.innerText = `Câu ${idx + 1}: ${data.q}`;
+            qBox.appendChild(qText);
+
+            const optList = document.createElement('div');
+            optList.className = 'options-list';
+
+            Object.keys(data.options).forEach((key) => {
+                const optItem = document.createElement('div');
+                optItem.className = 'option-item';
+                optItem.innerHTML = `<strong>${key}.</strong>&nbsp;${data.options[key]}`;
+                optItem.onclick = () => selectOption(idx, key, optItem);
+                optList.appendChild(optItem);
+            });
+
+            qBox.appendChild(optList);
+            quizContainer.appendChild(qBox);
+        });
+        updateProgress();
+    }
+
+    function selectOption(qIdx, key, element) {
+        userAnswers[qIdx] = key;
+        const siblings = element.parentNode.querySelectorAll('.option-item');
+        siblings.forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+
+        setTimeout(() => {
+            if(currentIdx < quizData.length - 1) {
+                changeQuestion(1);
+            }
+        }, 300);
+    }
+
+    function changeQuestion(direction) {
+        document.getElementById(`q-${currentIdx}`).classList.remove('active');
+        currentIdx += direction;
+        document.getElementById(`q-${currentIdx}`).classList.add('active');
+
+        btnPrev.disabled = currentIdx === 0;
+        btnNext.innerText = (currentIdx === quizData.length - 1) ? "Xem kết quả" : "Tiếp theo";
+        
+        // Cập nhật tiêu đề phần
+        const currentPart = quizData[currentIdx].part;
+        if (currentPart === 1) partIndicator.innerText = "PHẦN 1: TÍNH CÁCH & PHONG CÁCH LÀM VIỆC";
+        else if (currentPart === 2) partIndicator.innerText = "PHẦN 2: MỨC ĐỘ THẤU CẢM TRONG CÔNG VIỆC";
+        else if (currentPart === 3) partIndicator.innerText = "PHẦN 3: SỨC KHỎE TINH THẦN NƠI CÔNG SỞ";
+
+        updateProgress();
+    }
+
+    btnNext.onclick = function() {
+        if (userAnswers[currentIdx] === null) {
+            alert("Vui lòng chọn phương án trả lời trước khi chuyển câu!");
+            return;
+        }
+        if (currentIdx === quizData.length - 1) {
+            showResult();
+        } else {
+            changeQuestion(1);
+        }
+    };
+
+    function updateProgress() {
+        const percent = ((currentIdx + 1) / quizData.length) * 100;
+        progressBar.style.width = `${percent}%`;
+    }
+
+    function showResult() {
+        quizContainer.style.display = 'none';
+        document.getElementById('nav-buttons').style.display = 'none';
+        document.getElementById('progress-container').style.display = 'none';
+        document.getElementById('sub-title').style.display = 'none';
+        partIndicator.style.display = 'none';
+
+        // Phân tích dữ liệu theo 3 phần riêng biệt
+        let p1Correct = 0, p1TotalKnowledge = 0;
+        let p2Correct = 0, p2Total = 0;
+        let p3Correct = 0, p3Total = 0;
+
+        let countsP1 = { A: 0, B: 0, C: 0, D: 0 };
+
+        quizData.forEach((item, idx) => {
+            const ans = userAnswers[idx];
+            if (item.part === 1) {
+                if (item.type === "personality") {
+                    countsP1[ans]++;
+                } else if (item.type === "knowledge") {
+                    p1TotalKnowledge++;
+                    if (ans === item.ans) p1Correct++;
+                }
+            } else if (item.part === 2) {
+                p2Total++;
+                if (ans === item.ans) p2Correct++;
+            } else if (item.part === 3) {
+                p3Total++;
+                if (ans === item.ans) p3Correct++;
+            }
+        });
+
+        // 1. Kết quả phần 1
+        let p1Style = "";
+        let p1Desc = "";
+        const maxChoice = Object.keys(countsP1).reduce((a, b) => countsP1[a] > countsP1[b] ? a : b);
+        
+        if (maxChoice === 'A') {
+            p1Style = "Phong cách Chủ động & Logic 🧭";
+            p1Desc = "Bạn có xu hướng tổ chức, làm việc khoa học, coi trọng tiến độ và số liệu thực tế. Bạn kiên nhẫn với quy trình nhưng đôi khi cần linh hoạt hơn trước sự thay đổi.";
+        } else if (maxChoice === 'B') {
+            p1Style = "Phong cách Linh hoạt & Sáng tạo 💡";
+            p1Desc = "Bạn thích môi trường tự do, tràn đầy cảm hứng, có khả năng thích ứng cao với hoàn cảnh mới. Điểm cần lưu ý là đôi khi bạn dễ bị trì hoãn khi gặp áp lực lớn.";
+        } else if (maxChoice === 'C') {
+            p1Style = "Phong cách Kết nối & Đồng đội 🤝";
+            p1Desc = "Bạn là chất keo gắn kết tuyệt vời, coi trọng các mối quan hệ xã hội trong công ty, luôn hướng tới giải pháp đôi bên cùng có lợi (Win-Win).";
+        } else {
+            p1Style = "Phong cách Độc lập & Thách thức ⚡";
+            p1Desc = "Bạn có xu hướng làm việc độc lập mạnh mẽ, khao khát thể hiện dấu ấn cá nhân và chinh phục mục tiêu lớn. Hãy lưu ý kiểm soát cảm xúc tránh xung đột.";
+        }
+        document.getElementById('p1-analysis').innerText = `Xu hướng ưu thế: ${p1Style} (Đúng ${p1Correct}/${p1TotalKnowledge} câu xử lý tình huống cơ bản)`;
+        document.getElementById('p1-details').innerText = p1Desc;
+
+        // 2. Kết quả phần 2
+        document.getElementById('p2-score').innerText = `Điểm số Thấu Cảm: ${p2Correct}/${p2Total} câu trả lời chuẩn xác.`;
+        let p2Text = "";
+        if (p2Correct >= 12) p2Text = "Năng lực thấu cảm tuyệt vời! Bạn biết đặt mình vào vị trí của đồng nghiệp và khách hàng, lắng nghe không phán xét và xử lý xung đột vô cùng tinh tế.";
+        else if (p2Correct >= 7) p2Text = "Mức độ thấu cảm trung bình khá. Bạn có khả năng lắng nghe và thấu hiểu tốt, tuy nhiên đôi khi áp lực công việc có thể làm bạn mất đi sự kiên nhẫn cần thiết.";
+        else p2Text = "Bạn có xu hướng giải quyết công việc thiên về lý trí cứng nhắc. Nên học cách quan sát ngôn ngữ cơ thể và chủ động lắng nghe tâm tư của cộng sự xung quanh nhiều hơn.";
+        document.getElementById('p2-advice').innerText = p2Text;
+
+        // 3. Kết quả phần 3
+        document.getElementById('p3-score').innerText = `Điểm số Sức Khỏe Tinh Thần: ${p3Correct}/${p3Total} câu trả lời đúng.`;
+        let p3Text = "";
+        if (p3Correct >= 15) p3Text = "Nhận thức xuất sắc! Bạn hiểu rất rõ về hội chứng Burnout, an toàn tâm lý và biết cách thiết lập ranh giới lành mạnh để bảo vệ tinh thần bền vững.";
+        else if (p3Correct >= 9) p3Text = "Nhận thức ở mức vừa phải. Bạn đã nhận diện được một số nguy cơ độc hại nơi công sở, nhưng cần trang bị thêm các biện pháp xoa dịu stress khoa học.";
+        else p3Text = "Mức độ nhận biết nguy cơ tâm lý còn thấp. Bạn dễ rơi vào bẫy 'tích cực độc hại' hoặc cố chịu đựng bất ổn tinh thần mà không tìm sự trợ giúp chuyên môn.";
+        document.getElementById('p3-advice').innerText = p3Text;
+
+        document.getElementById('result-box').style.display = 'block';
+    }
+
+    function restartQuiz() {
+        currentIdx = 0;
+        userAnswers = new Array(quizData.length).fill(null);
+        
+        document.getElementById('quiz-container').style.display = 'block';
+        document.getElementById('nav-buttons').style.display = 'flex';
+        document.getElementById('progress-container').style.display = 'block';
+        document.getElementById('sub-title').style.display = 'block';
+        partIndicator.style.display = 'inline-block';
+        document.getElementById('result-box').style.display = 'none';
+        
+        btnPrev.disabled = true;
+        btnNext.innerText = "Tiếp theo";
+        
+        initQuiz();
+    }
+
+    initQuiz();
+</script>
+
+</body>
+</html>

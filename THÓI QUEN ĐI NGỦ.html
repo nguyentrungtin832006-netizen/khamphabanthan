@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Đánh Giá Thói Quen & Chất Lượng Giấc Ngủ</title>
+    <style>
+        /* GIỮ NGUYÊN BỐ CỤC MÀU SẮC VÀ HÌNH THỨC GIAO DIỆN */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #dfcbfb 0%, #b6cbff 100%);
+            --primary-color: #7a70e6; 
+            --secondary-color: #9187f5;
+            --text-color: #1e293b;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --shadow: 0 8px 32px rgba(122, 112, 230, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 35px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            color: var(--text-color);
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        header p {
+            text-align: center;
+            color: #475569;
+            margin-bottom: 15px;
+        }
+
+        .part-indicator {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+            background: rgba(122, 112, 230, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 0 auto 20px auto;
+        }
+        .part-container { text-align: center; }
+
+        /* Progress Bar */
+        .progress-container {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background-color: var(--primary-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Question Styles */
+        .question-box {
+            display: none;
+        }
+
+        .question-box.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-text {
+            font-size: 19px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #0f172a;
+        }
+
+        /* Options */
+        .options-list {
+            list-style: none;
+        }
+
+        .option-item {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .option-item:hover {
+            border-color: var(--secondary-color);
+            background-color: rgba(243, 240, 255, 0.8);
+        }
+
+        .option-item.selected {
+            border-color: var(--primary-color);
+            background-color: #f3f0ff;
+            color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(122, 112, 230, 0.15);
+        }
+
+        /* Buttons Navigation */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-prev {
+            background-color: rgba(0, 0, 0, 0.06);
+            color: #334155;
+        }
+
+        .btn-prev:hover { background-color: rgba(0, 0, 0, 0.1); }
+
+        .btn-next {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(122, 112, 230, 0.25);
+        }
+
+        .btn-next:hover { 
+            background-color: #655bc7; 
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Result Box */
+        #result-box {
+            text-align: left;
+        }
+        #result-box h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #0f172a;
+        }
+
+        .result-block {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .result-block h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(122, 112, 230, 0.1);
+            padding-bottom: 5px;
+        }
+
+        .score-summary {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .btn-restart {
+            display: block;
+            width: 100%;
+            margin-top: 25px;
+            background-color: var(--secondary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(145, 135, 245, 0.25);
+            text-align: center;
+        }
+        .btn-restart:hover { background-color: #7d72eb; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Đánh Giá Thói Quen & Chất Lượng Giấc Ngủ</h1>
+        <p id="sub-title">Hãy chọn phương án phản ánh đúng nhất thực tế sinh hoạt của bạn.</p>
+        
+    </header>
+
+    <div id="quiz-container"></div>
+
+    <div class="nav-buttons" id="nav-buttons">
+        <button class="btn-prev" id="btn-prev" onclick="changeQuestion(-1)" disabled>Quay lại</button>
+        <button class="btn-next" id="btn-next" onclick="changeQuestion(1)">Tiếp theo</button>
+    </div>
+
+    <div id="result-box" style="display: none;">
+        <h2>Báo Cáo Phân Tích Giấc Ngủ Của Bạn</h2>
+        
+        <div class="result-block">
+            <h3>📊 Tổng quan chất lượng giấc ngủ</h3>
+            <div id="overall-analysis" class="score-summary">Đang tính toán...</div>
+            <p id="overall-details" style="color: #475569; font-size: 15px;"></p>
+        </div>
+
+        <button class="btn-restart" onclick="restartQuiz()">Thực hiện lại bài test</button>
+    </div>
+</div>
+
+<script>
+    // Toàn bộ cơ sở dữ liệu 50 câu hỏi mới về Giấc ngủ
+    const quizData = [
+        { q: "Tôi đi ngủ vào cùng một khung giờ mỗi ngày.", options: { A: "Luôn luôn", B: "Thường xuyên", C: "Thỉnh thoảng", D: "Hiếm khi" }, part: 1 },
+        { q: "Tôi thức dậy vào cùng một giờ mỗi sáng.", options: { A: "Luôn luôn", B: "Thường xuyên", C: "Thỉnh thoảng", D: "Hiếm khi" }, part: 1 },
+        { q: "Tôi sử dụng điện thoại hoặc thiết bị điện tử ngay trước khi ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 1 },
+        { q: "Tôi uống cà phê, trà đặc hoặc nước tăng lực vào buổi tối.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 1 },
+        { q: "Tôi duy trì tập luyện đều đặn giúp hỗ trợ giấc ngủ.", options: { A: "Luôn luôn", B: "Thường xuyên", C: "Thỉnh thoảng", D: "Hiếm khi" }, part: 1 },
+        { q: "Tôi ăn quá no trước giờ đi ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 1 },
+        { q: "Tôi có thói quen thư giãn trước khi đi ngủ.", options: { A: "Luôn luôn", B: "Thường xuyên", C: "Thỉnh thoảng", D: "Hiếm khi" }, part: 1 },
+        { q: "Tôi ngủ trưa quá lâu ảnh hưởng đến giấc ngủ đêm.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 1 },
+        { q: "Tôi thường làm việc hoặc học tập ngay trước giờ ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 1 },
+        { q: "Tôi cảm thấy mình có lịch sinh hoạt ngủ nghỉ ổn định.", options: { A: "Rất đúng", B: "Khá đúng", C: "Đúng một phần", D: "Không đúng" }, part: 1 },
+        
+        { q: "Tôi mất hơn 30 phút để ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 2 },
+        { q: "Tôi cảm thấy khó thư giãn khi nằm trên giường.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 2 },
+        { q: "Tôi suy nghĩ quá nhiều gây khó ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 2 },
+        { q: "Tôi lo lắng về công việc hoặc cuộc sống trước khi ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 2 },
+        { q: "Tôi cảm thấy bồn chồn khi cố gắng đi ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 2 },
+        { q: "Tôi cần thuốc hoặc thực phẩm hỗ trợ để ngủ ngon.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 2 },
+        { q: "Tôi dễ dàng chìm vào giấc ngủ.", options: { A: "Luôn luôn", B: "Thường xuyên", C: "Thỉnh thoảng", D: "Hiếm khi" }, part: 2 },
+        { q: "Tôi cảm thấy thoải mái khi chuẩn bị đi ngủ.", options: { A: "Luôn luôn", B: "Thường xuyên", C: "Thỉnh thoảng", D: "Hiếm khi" }, part: 2 },
+        { q: "Tôi cảm thấy căng thẳng trước giờ đi ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 2 },
+        { q: "Tôi thường xuyên bị mất ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 2 },
+        
+        { q: "Tôi thức giấc giữa đêm.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 3 },
+        { q: "Tôi khó ngủ lại sau khi thức giấc.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 3 },
+        { q: "Tôi thức tỉnh để đi vệ sinh nhiều lần trong đêm.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 3 },
+        { q: "Tôi bị ồn ào làm gián đoạn giấc ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 3 },
+        { q: "Tôi cảm thấy phòng ngủ quá nóng hoặc quá lạnh.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 3 },
+        { q: "Tôi ngủ mơ nhiều đến mức độ ảnh hưởng của giấc ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 3 },
+        { q: "Tôi bị chạng vạng (ngủ chập chờn) khi ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 3 },
+        { q: "Người khác nhận ra rằng tôi ngủ không yên giấc.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 3 },
+        { q: "Tôi cảm thấy giấc ngủ bị gián đoạn nhiều lần.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 3 },
+        { q: "Tôi ngủ đủ số giờ mong muốn.", options: { A: "Luôn luôn", B: "Thường xuyên", C: "Thỉnh thoảng", D: "Hiếm khi" }, part: 3 },
+        { q: "Tôi thức dậy sớm hơn dự định.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 3 },
+        { q: "Tôi cảm thấy giấc ngủ sâu và liên tục.", options: { A: "Luôn luôn", B: "Thường xuyên", C: "Thỉnh thoảng", D: "Hiếm khi" }, part: 3 },
+        { q: "Tôi bị đau đớn cơ thể làm ảnh hưởng đến giấc ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 3 },
+        { q: "Tôi hay mơ mộng khi ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 3 },
+        { q: "Tôi đánh giá chất lượng giấc ngủ trong đêm của mình là:", options: { A: "Rất tốt", B: "Tốt", C: "Kém", D: "Rất kém" }, part: 3 },
+        
+        { q: "Tôi thức dậy với cảm giác tỉnh táo.", options: { A: "Luôn luôn", B: "Thường xuyên", C: "Thỉnh thoảng", D: "Hiếm khi" }, part: 4 },
+        { q: "Tôi cảm thấy tràn đầy năng lượng vào buổi sáng.", options: { A: "Luôn luôn", B: "Thường xuyên", C: "Thỉnh thoảng", D: "Hiếm khi" }, part: 4 },
+        { q: "Tôi cảm thấy mệt mỏi sau khi ngủ dậy.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 4 },
+        { q: "Tôi buồn ngủ vào ban ngày.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 4 },
+        { q: "Tôi khó tập trung vì thiếu ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 4 },
+        { q: "Tôi dễ cáu gắt vì giấc ngủ chưa đủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 4 },
+        { q: "Tôi cảm thấy hiệu quả công việc bị ảnh hưởng bởi giấc ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 4 },
+        { q: "Tôi cần ngủ bù vào cuối tuần.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 4 },
+        { q: "Tôi ngủ gật trong lúc học tập hoặc làm việc.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 4 },
+        { q: "Tôi cảm thấy tinh thần minh mẫn trong ngày.", options: { A: "Luôn luôn", B: "Thường xuyên", C: "Thỉnh thoảng", D: "Hiếm khi" }, part: 4 },
+        { q: "Tôi cảm thấy sức khỏe tổng thể bị ảnh hưởng bởi giấc ngủ.", options: { A: "Không bao giờ", B: "Hiếm khi", C: "Thường xuyên", D: "Gần như luôn luôn" }, part: 4 },
+        { q: "Tôi duy trì mức độ năng lượng ổn định trong ngày.", options: { A: "Luôn luôn", B: "Thường xuyên", C: "Thỉnh thoảng", D: "Hiếm khi" }, part: 4 },
+        { q: "Tôi cảm thấy hài lòng với chất lượng giấc ngủ hiện tại.", options: { A: "Rất hài lòng", B: "Hài lòng", C: "Không hài lòng", D: "Rất không hài lòng" }, part: 4 },
+        { q: "Tôi cảm thấy giấc ngủ giúp tôi hồi phục tốt về thể chất và tinh thần.", options: { A: "Luôn luôn", B: "Thường xuyên", C: "Thỉnh thoảng", D: "Hiếm khi" }, part: 4 },
+        { q: "Nhìn chung, tôi đánh giá chất lượng giấc ngủ của mình là:", options: { A: "Rất tốt", B: "Tốt", C: "Kém", D: "Rất kém" }, part: 4 }
+    ];
+
+    let currentIdx = 0;
+    let userAnswers = new Array(quizData.length).fill(null);
+
+    const quizContainer = document.getElementById('quiz-container');
+    const progressBar = document.getElementById('progress-bar');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const partIndicator = document.getElementById('part-indicator');
+
+    function initQuiz() {
+        quizContainer.innerHTML = '';
+        quizData.forEach((data, idx) => {
+            const qBox = document.createElement('div');
+            qBox.className = `question-box ${idx === 0 ? 'active' : ''}`;
+            qBox.id = `q-${idx}`;
+
+            const qText = document.createElement('div');
+            qText.className = 'question-text';
+            qText.innerText = `Câu ${idx + 1}: ${data.q}`;
+            qBox.appendChild(qText);
+
+            const optList = document.createElement('div');
+            optList.className = 'options-list';
+
+            Object.keys(data.options).forEach((key) => {
+                const optItem = document.createElement('div');
+                optItem.className = 'option-item';
+                optItem.innerHTML = `<strong>${key}.</strong>&nbsp;${data.options[key]}`;
+                optItem.onclick = () => selectOption(idx, key, optItem);
+                optList.appendChild(optItem);
+            });
+
+            qBox.appendChild(optList);
+            quizContainer.appendChild(qBox);
+        });
+        updateProgress();
+    }
+
+    function selectOption(qIdx, key, element) {
+        userAnswers[qIdx] = key;
+        const siblings = element.parentNode.querySelectorAll('.option-item');
+        siblings.forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+
+        setTimeout(() => {
+            if(currentIdx < quizData.length - 1) {
+                changeQuestion(1);
+            }
+        }, 300);
+    }
+
+    function changeQuestion(direction) {
+        document.getElementById(`q-${currentIdx}`).classList.remove('active');
+        currentIdx += direction;
+        document.getElementById(`q-${currentIdx}`).classList.add('active');
+
+        btnPrev.disabled = currentIdx === 0;
+        btnNext.innerText = (currentIdx === quizData.length - 1) ? "Xem kết quả" : "Tiếp theo";
+        
+        // Cập nhật tiêu đề nhóm câu hỏi
+        const currentPart = quizData[currentIdx].part;
+        if (currentPart === 1) partIndicator.innerText = "NHÓM 1: THÓI QUEN ĐI NGỦ";
+        else if (currentPart === 2) partIndicator.innerText = "NHÓM 2: KHẢ NĂNG ĐI VÀO GIẤC NGỦ (Câu 11-20)";
+        else if (currentPart === 3) partIndicator.innerText = "NHÓM 3: CHẤT LƯỢNG GIẤC NGỦ TRONG ĐÊM (Câu 21-35)";
+        else if (currentPart === 4) partIndicator.innerText = "NHÓM 4: TÌNH TRẠNG SAU KHI THỨC DẬY (Câu 36-50)";
+
+        updateProgress();
+    }
+
+    btnNext.onclick = function() {
+        if (userAnswers[currentIdx] === null) {
+            alert("Vui lòng chọn phương án trả lời trước khi chuyển câu!");
+            return;
+        }
+        if (currentIdx === quizData.length - 1) {
+            showResult();
+        } else {
+            changeQuestion(1);
+        }
+    };
+
+    function updateProgress() {
+        const percent = ((currentIdx + 1) / quizData.length) * 100;
+        progressBar.style.width = `${percent}%`;
+    }
+
+    function showResult() {
+        quizContainer.style.display = 'none';
+        document.getElementById('nav-buttons').style.display = 'none';
+        document.getElementById('progress-container').style.display = 'none';
+        document.getElementById('sub-title').style.display = 'none';
+        partIndicator.style.display = 'none';
+
+        // Tính toán thang điểm đơn giản (A=3 điểm, B=2 điểm, C=1 điểm, D=0 điểm) cho câu tích cực
+        // Đối với câu tiêu cực thì ngược lại. Hệ thống này tính tổng quát tỷ lệ chọn để phân tích.
+        let scoreA = 0, scoreB = 0, scoreC = 0, scoreD = 0;
+        userAnswers.forEach(ans => {
+            if(ans === 'A') scoreA++;
+            if(ans === 'B') scoreB++;
+            if(ans === 'C') scoreC++;
+            if(ans === 'D') scoreD++;
+        });
+
+        let evaluation = "";
+        let details = "";
+
+        if (scoreA + scoreB > 35) {
+            evaluation = "Giấc ngủ của bạn có chất lượng Tốt! ✨";
+            details = "Bạn duy trì thói quen ngủ khoa học, dễ đi vào giấc ngủ và phục hồi năng lượng rất tốt sau khi thức dậy. Hãy tiếp tục phát huy lối sống lành mạnh này.";
+        } else if (scoreA + scoreB >= 20) {
+            evaluation = "Giấc ngủ ở mức Trung bình - Khá 📊";
+            details = "Chất lượng giấc ngủ của bạn tương đối ổn định nhưng đôi lúc còn bị gián đoạn hoặc bị ảnh hưởng bởi thói quen sử dụng thiết bị điện tử hoặc áp lực tinh thần hằng ngày.";
+        } else {
+            evaluation = "Cảnh báo: Giấc ngủ của bạn đang ở mức Kém 🚨";
+            details = "Bạn thường xuyên gặp khó khăn khi vào giấc, ngủ không sâu và mệt mỏi vào ban ngày. Bạn nên điều chỉnh lại lịch sinh hoạt, hạn chế chất kích thích và cân nhắc tham khảo ý kiến chuyên gia nếu tình trạng kéo dài.";
+        }
+
+        document.getElementById('overall-analysis').innerText = evaluation;
+        document.getElementById('overall-details').innerText = details;
+        document.getElementById('result-box').style.display = 'block';
+    }
+
+    function restartQuiz() {
+        currentIdx = 0;
+        userAnswers = new Array(quizData.length).fill(null);
+        
+        document.getElementById('quiz-container').style.display = 'block';
+        document.getElementById('nav-buttons').style.display = 'flex';
+        document.getElementById('progress-container').style.display = 'block';
+        document.getElementById('sub-title').style.display = 'block';
+        partIndicator.style.display = 'inline-block';
+        document.getElementById('result-box').style.display = 'none';
+        
+        btnPrev.disabled = true;
+        btnNext.innerText = "Tiếp theo";
+        
+        initQuiz();
+    }
+
+    initQuiz();
+</script>
+
+</body>
+</html>

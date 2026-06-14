@@ -247,40 +247,75 @@
         </div>
     </div>
 
-    <script>
-        // 1. Khởi tạo cấu hình kết nối Google
-        function initializeGoogleSignIn() {
-            // Thay thế đoạn chữ dưới bằng mã Client ID lấy từ Google Cloud Console của bạn
-            const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
+   <script>
+    // =================================================================--------
+    // 1. [CẤU HÌNH GOOGLE] - Khởi tạo cấu hình và xử lý kết nối Google
+    // =================================================================--------
+    function initializeGoogleSignIn() {
+        // Sử dụng trực tiếp mã Client ID Google của bạn để hệ thống nhận diện
+        const GOOGLE_CLIENT_ID = "172410270655-1jc7febfh90ctfvd4df4hidb35a83ipp.apps.googleusercontent.com";
 
-            if(GOOGLE_CLIENT_ID.includes("YOUR_GOOGLE_CLIENT_ID")) {
-                console.warn("Lưu ý: Bạn chưa cấu hình Google Client ID tại dòng số 194!");
-            }
+        window.tokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: GOOGLE_CLIENT_ID,
+            scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+            callback: (tokenResponse) => {
+                if (tokenResponse && tokenResponse.access_token) {
+                    // Nhận Token thành công -> Đăng nhập hợp lệ
+                    alert("Đăng nhập bằng tài khoản Google thành công!");
+                    
+                    // Tự động chuyển hướng mượt mà sang trang bìa chính
+                    window.location.href = "trangbiachinh.html";
+                }
+            },
+        });
+    }
 
-            window.tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: "172410270655-1jc7febfh90ctfvd4df4hidb35a83ipp.apps.googleusercontent.com",
-                scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
-                callback: (tokenResponse) => {
-                    if (tokenResponse && tokenResponse.access_token) {
-                        // Nhận Token thành công -> Đăng nhập hợp lệ
-                        alert("Đăng nhập bằng tài khoản Google thành công!");
-                        
-                        // Tự động chuyển hướng mượt mà sang trang bìa chính
-                        window.location.href = "trangbiachinh.html";
-                    }
-                },
-            });
+    // Hàm kích hoạt mở cửa sổ chọn tài khoản Google khi người dùng Click nút
+    function handleGoogleLogin() {
+        if (window.tokenClient) {
+            window.tokenClient.requestAccessToken();
+        } else {
+            alert("Hệ thống Google đang tải, vui lòng đợi trong giây lát hoặc làm mới trang!");
         }
+    }
 
-        // 2. Hàm kích hoạt mở cửa sổ chọn tài khoản Google khi Click nút
-        function handleGoogleLogin() {
-            if (window.tokenClient) {
-                window.tokenClient.requestAccessToken();
-            } else {
-                alert("Hệ thống Google đang tải, vui lòng đợi trong giây lát hoặc làm mới trang!");
-            }
+    // =================================================================--------
+    // 2. [CẤU HÌNH FACEBOOK] - Khởi tạo cấu hình và xử lý kết nối Facebook SDK
+    // =================================================================--------
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '2719446318452705', // <-- Đã điền chính xác App ID ứng dụng "Khám Phá Bản Thân" của bạn
+            cookie     : true,                     
+            xfbml      : true,                     
+            version    : 'v18.0'                   
+        });
+    };
+
+    // Hàm kích hoạt mở cửa sổ đăng nhập Facebook khi người dùng Click nút
+    function handleFacebookLogin() {
+        if (typeof FB !== 'undefined') {
+            FB.login(function(response) {
+                if (response.authResponse) {
+                    alert("Đăng nhập bằng tài khoản Facebook thành công!");
+                    window.location.href = "trangbiachinh.html";
+                } else {
+                    alert("Người dùng đã hủy đăng nhập hoặc chưa cấp quyền cho ứng dụng.");
+                }
+            }, {scope: 'public_profile,email'});
+        } else {
+            alert("Hệ thống Facebook đang tải, vui lòng đợi trong giây lát!");
         }
-    </script>
+    }
+
+    // =================================================================--------
+    // 3. [TỰ ĐỘNG KÍCH HOẠT] - Chạy cấu hình Google ngay khi trang web tải xong
+    // =================================================================--------
+    window.onload = function() {
+        if (typeof google !== 'undefined') {
+            initializeGoogleSignIn();
+        }
+    };
+</script>
 
 </body>
 </html>

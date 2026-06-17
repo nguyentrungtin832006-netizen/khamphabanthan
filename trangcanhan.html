@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khám Phá Bản Thân - Khảo Sát Tâm Lý & Thấu Hiểu Bản Thân</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        /* Định nghĩa màu tím hoa oải hương làm chủ đạo theo nút bấm trong ảnh */
+        .bg-lavender-primary { background-color: #7a70e6; }
+        .text-lavender-primary { color: #7a70e6; }
+        .hover\:bg-lavender-dark:hover { background-color: #655bc7; }
+        .hover\:text-lavender-dark:hover { color: #655bc7; }
+        .shadow-lavender { border-color: rgba(122, 112, 230, 0.2); --tw-shadow-color: rgba(122, 112, 230, 0.2); }
+        .bg-lavender-light { background-color: #f3f0ff; }
+        .text-lavender-light { color: #9187f5; }
+        /* --- CẤU HÌNH HIỆU ỨNG LƯỚT 4 ẢNH TỰ ĐỘNG (KHÔNG ĐỔI CẤU TRÚC WEB) --- */
+.slider-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 450px; /* Khớp với chiều cao khối cũ của bạn */
+    overflow: hidden;
+    border-radius: 1.5rem;
+}
+.slider-wrapper {
+    display: flex;
+    width: 400%; /* 4 ảnh = 400% */
+    height: 100%;
+    animation: autoSlide 16s infinite ease-in-out;
+}
+.slide-item {
+    width: 25%; /* Mỗi ảnh chiếm 1 phần 4 */
+    height: 100%;
+    min-height: 450px;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+/* Vòng lặp mượt mà giữa 4 ảnh */
+@keyframes autoSlide {
+    0%, 20% { transform: translateX(0); }
+    25%, 45% { transform: translateX(-25%); }
+    50%, 70% { transform: translateX(-50%); }
+    75%, 95% { transform: translateX(-75%); }
+    100% { transform: translateX(0); }
+}
+/* BỐ CỤC HỒ SƠ */
+        .container {
+            display: flex;
+            max-width: 1100px;
+            width: 100%;
+            gap: 25px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 25px 0;
+            box-shadow: 0 4px 15px rgba(122, 112, 230, 0.06);
+            height: 600px; /* Đã sửa thành tự co giãn để không bị cố định 600px thô cứng */
+        }
+
+        .profile-summary {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f3f0ff;
+            margin-bottom: 15px;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 12px;
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #7a70e6;
+        }
+
+        .camera-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: #7a70e6;
+            color: #fff;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            border: 2px solid #fff;
+            cursor: pointer;
+        }
+
+        .profile-summary h3 {
+            font-size: 16px;
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .profile-summary p {
+            font-size: 13px;
+            color: #757575;
+        }
+
+        .menu-list {
+            list-style: none;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: #555;
+            text-decoration: none;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item i {
+            width: 25px;
+            font-size: 16px;
+            color: #7a70e6;
+        }
+
+        .menu-item.active {
+            color: #7a70e6;
+            background-color: #f3f0ff;
+            border-left: 4px solid #7a70e6;
+            padding-left: 21px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover:not(.active) {
+            background-color: #faf9ff;
+            color: #7a70e6;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 30px 40px;
+            box-shadow: 0 4px 15px rgba(122, 112, 230, 0.06);
+        }
+
+        .main-content h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f3f0ff;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #4a5568;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 45px;
+            padding: 10px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #333;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: #7a70e6;
+            box-shadow: 0 0 0 3px rgba(122, 112, 230, 0.15);
+        }
+
+        .form-control:disabled {
+            background-color: #f8fafc;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .btn-submit {
+            background-color: #7a70e6;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(122, 112, 230, 0.2);
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: #655bc7;
+            box-shadow: 0 6px 16px rgba(122, 112, 230, 0.3);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-[#dfcbfb] to-[#b6cbff] text-slate-700 antialiased min-h-screen flex flex-col justify-between">
+
+    <header class="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-white/40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <svg class="w-11 h-11" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M370 357C341 386 300 404 255 404C169.3 404 99.5 335.3 98 250C99.5 164.7 169.3 96 255 96C302.5 96 345 116.5 374 148.5L348.5 204C327 181 292.5 166.5 255 166.5C208.5 166.5 170.5 204 168.5 250C170.5 296 208.5 333.5 255 333.5C291 333.5 324.5 320 346 299L370 357Z" fill="#7a70e6"/>
+                    <rect x="238" y="152" width="24" height="24" fill="#7a70e6"/>
+                    <rect x="152" y="238" width="24" height="24" fill="#7a70e6"/>
+                    <rect x="238" y="324" width="24" height="24" fill="#7a70e6"/>
+                    <path d="M241 190V250L351 313.5V288.5L259 236V190H241Z" fill="#7a70e6"/>
+                    <path d="M370 215L435 250L370 285V215Z" fill="#7a70e6"/>
+                </svg>
+                <span class="text-xl font-bold text-slate-800 tracking-wide">KHÁM PHÁ BẢN THÂN</span>
+            </div>
+            
+            <nav class="hidden md:flex items-center gap-8 font-medium text-slate-600">
+                <a href="trangbiachinh.html" class="hover:text-lavender-primary transition">Trang chủ</a>
+                <a href="baikhaosat.html" class="hover:text-lavender-primary transition">Bài khảo sát</a>
+                <a href="vechungtoi.html" class="hover:text-lavender-primary transition">Về chúng tôi</a>
+                <a href="gocchiase.html" class="hover:text-lavender-primary transition">Góc chia sẻ</a>
+                <a href="sanpham.html" class="hover:text-lavender-primary transition">Sản phẩm</a>
+            </nav>
+
+    <div class="flex items-center space-x-6">
+
+            <div class="relative" x-data="{ userMenu: false }">
+                <button @click="userMenu = !userMenu" @click.outside="userMenu = false" class="text-black flex items-center space-x-1 hover:opacity-80 transition focus:outline-none">
+                    <span class="text-[15px] font-medium whitespace-nowrap">Tài Khoản</span>
+                    <i class="fa-solid fa-caret-down text-xs"></i>
+                </button>
+                <div x-show="userMenu" 
+                     x-transition
+                     class="absolute right-0 mt-3 w-48 bg-white rounded-xl shadow-xl py-2 border border-gray-100 z-50 text-gray-700 text-sm" 
+                     style="display: none;">
+                    <a href="#" class="block px-4 py-2.5 hover:bg-purple-50 transition italic">Trang cá nhân</a>
+                    <a href="donmua.html" class="block px-4 py-2.5 hover:bg-purple-50 transition italic">Sách đã mua</a>
+                    <hr class="my-1 border-gray-100">
+                    <a href="trangbiangoai.html" class="block px-4 py-2.5 hover:bg-red-50 text-red-600 font-semibold transition">Đăng xuất</a>
+                </div>
+            </div>
+
+            <div class="relative flex flex-col items-center cursor-pointer select-none" @click="cartOpen = !cartOpen">
+    <div class="relative">
+        <i class="fa-solid fa-cart-shopping text-3xl text-black"></i>
+        <span class="absolute -top-1.5 -right-2 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white"
+              x-text="cartItems.reduce((sum, item) => sum + item.quantity, 0)">
+        </span>
+    </div>
+    <span class="text-black text-[11px] mt-0.5 font-semibold tracking-wide">Giỏ hàng</span>
+
+    <div x-show="cartOpen" 
+         @click.outside="cartOpen = false"
+         x-transition
+         class="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-100 py-4 z-50 text-slate-800 cursor-default"
+         @click.stop
+         style="display: none;">
+        
+        <div class="px-4 pb-2 border-b border-gray-100">
+            <h3 class="font-bold text-sm text-gray-900">Sản phẩm đã chọn</h3>
+        </div>
+
+        <div class="max-h-60 overflow-y-auto divide-y divide-gray-50">
+            <template x-if="cartItems.length === 0">
+                <div class="p-6 text-center text-xs text-gray-400 italic">Giỏ hàng đang trống</div>
+            </template>
+
+            <template x-for="item in cartItems" :key="item.id">
+                <div class="p-4 flex items-center space-x-3">
+                    <div class="w-10 h-14 bg-purple-600 rounded text-white text-[8px] p-1 font-bold flex items-center justify-center text-center leading-tight">
+                        BOOK
+                    </div>
+                    <div class="flex-grow text-left">
+                        <p class="text-xs font-bold text-gray-800 line-clamp-1" x-text="item.title"></p>
+                        <p class="text-[10px] text-gray-400 mt-0.5" x-text="item.price.toLocaleString('vi-VN') + 'đ x ' + item.quantity"></p>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <div class="px-4 pt-3 border-t border-gray-100" x-show="cartItems.length > 0">
+            <div class="flex justify-between items-center mb-3 text-xs">
+                <span class="text-gray-500 font-medium">Tổng tiền:</span>
+                <span class="font-bold text-red-600 text-sm" x-text="getTotalPrice().toLocaleString('vi-VN') + 'đ'">0đ</span>
+            </div>
+            <button class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg text-xs font-bold transition shadow-sm">
+                Thanh toán
+            </button>
+        </div>
+    </div>
+</div>
+</div>
+
+        </div>
+    </div>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        </div>
+    </header>
+     <div class="container">
+        
+        <aside class="sidebar">
+            <div class="profile-summary">
+                <div class="avatar-container">
+                    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=TrungTin" alt="Avatar">
+                    <div class="camera-icon">
+                        <i class="fa-solid fa-camera"></i>
+                    </div>
+                </div>
+                <h3>Trung Tín Nguyễn</h3>
+                <p>Thành viên</p>
+            </div>
+            
+            <nav class="menu-list">
+                <a href="#" class="menu-item active">
+                    <i class="fa-solid fa-user"></i> Hồ sơ cá nhân
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fa-solid fa-bag-shopping"></i> Đơn mua
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fa-solid fa-bell"></i> Thông báo
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fa-solid fa-key"></i> Đổi mật khẩu
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <h2>Hồ Sơ Của Tôi</h2>
+            
+            <form action="#" method="POST">
+                <div class="form-group">
+                    <label for="fullname">Họ và tên</label>
+                    <input type="text" id="fullname" class="form-control" value="Trung Tín Nguyễn">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email (Cố định)</label>
+                    <input type="email" id="email" class="form-control" value="nguyentrungtin832006@gmail.com" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Số điện thoại</label>
+                    <input type="text" id="phone" class="form-control" placeholder="Nhập số điện thoại của bạn">
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Địa chỉ</label>
+                    <input type="text" id="address" class="form-control" placeholder="Nhập địa chỉ của bạn">
+                </div>
+
+                <button type="submit" class="btn-submit">Lưu thay đổi</button>
+            </form>
+        </main>
+
+    </div>
+    </body>
+</html>

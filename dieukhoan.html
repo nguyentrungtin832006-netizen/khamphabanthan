@@ -165,5 +165,46 @@
             });
         });
     </script>
+    <script>
+    // Cấu hình thời gian hết hạn (5 phút = 60 * 1000 mili giây)
+    const INACTIVITY_LIMIT = 5 * 60 * 1000; 
+    let logoutTimer;
+
+    // Hàm thực hiện đăng xuất
+    function tuDongDangXuat() {
+        // 1. Xóa thông tin đăng nhập khỏi localStorage
+        localStorage.removeItem('currentUser');
+        
+        // 2. Thông báo cho người dùng biết
+        alert("Phiên làm việc đã hết hạn do bạn không hoạt động trong 5 phút. Hệ thống sẽ tự động đăng xuất!");
+
+        // 3. Chuyển hướng quay về trang bìa ngoài (Thay 'trangbiangoai.html' bằng tên file chính xác của bạn)
+        window.location.href = 'trangbiangoai.html'; 
+    }
+
+    // Hàm đặt lại bộ đếm thời gian khi có tương tác
+    function resetBoDemThoiGian() {
+        // Xóa bộ đếm cũ đang chạy
+        clearTimeout(logoutTimer);
+        
+        // Thiết lập bộ đếm mới, sau 5 phút không gọi lại hàm này thì sẽ kích hoạt tự động đăng xuất
+        logoutTimer = setTimeout(tuDongDangXuat, INACTIVITY_LIMIT);
+    }
+
+    // Theo dõi các sự kiện tương tác của người dùng trên màn hình
+    function bắtĐầuTheoDõiHoạtĐộng() {
+        // Các hành động được tính là đang hoạt động
+        window.onload = resetBoDemThoiGian;
+        window.onmousemove = resetBoDemThoiGian; // Di chuyển chuột
+        window.onmousedown = resetBoDemThoiGian; // Click chuột
+        window.ontouchstart = resetBoDemThoiGian; // Chạm màn hình (Điện thoại)
+        window.onclick = resetBoDemThoiGian;      // Click
+        window.onkeydown = resetBoDemThoiGian;    // Gõ phím
+        window.onscroll = resetBoDemThoiGian;     // Cuộn trang
+    }
+
+    // Kích hoạt hệ thống theo dõi ngay khi trang được tải xong
+    bắtĐầuTheoDõiHoạtĐộng();
+</script>
 </body>
 </html>
